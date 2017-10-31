@@ -1,0 +1,34 @@
+{
+  "name": "togmol",
+  "version": "1.0.0",
+  "description": "togmol web-application is build by Eangfmbs for Cambodian people to be in one table",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eangfmbs/togmol.git"
+  },
+  "keywords": [
+    "togmol",
+    "kit",
+    "cambodia"
+  ],
+  "author": "Eangfmbs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eangfmbs/togmol/issues"
+  },
+  "homepage": "https://github.com/eangfmbs/togmol#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.0",
+    "mongoose": "^4.12.5",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.12.1"
+  }
+}
