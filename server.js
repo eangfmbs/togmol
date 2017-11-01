@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname+'/public'));
 app.use('/api', appRoute);
 
+mongoose.Promise = global.Promise;
 var uri = 'mongodb://localhost:27017/togmoldb';
 mongoose.connect(uri, { useMongoClient: true }, function(error) {
     if(error){

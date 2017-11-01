@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="page-header">Register Form</div>
+    <form ng-submit="register.regUser(regData)">
+        <table>
+            <tr>
+                <td><label>Email</label></td>
+                <td><input type="text" name="email" ng-model="register.regData.email"> </td>
+            </tr>
+            <tr>
+                <td><label>Username</label></td>
+                <td><input type="text" name="username" ng-model="register.regData.username"> </td>
+            </tr>
+            <tr>
+                <td><label>Password</label></td>
+                <td><input type="password" name="pwd" ng-model="register.regData.password"> </td>
+            </tr>
+            <button class="btn btn-primary" type="submit" name="register">ចុះឈ្មោះ</button>
+        </table>
+
+    </form>
+    <div class="jumbotron text-center" ng-show="register.loading">
+        <span class="glyphicon glyphicon-repeat spinner"></span>
+        <p>Loading...</p>
+    </div>
+    <div class="row show-hide-message" ng-show="register.successMsg">
+        <div class="alert alert-success">
+            {{register.successMsg}}
+        </div>
+    </div>
+    <div class="row show-hide-message" ng-show="register.errorMsg">
+        <div class="alert alert-danger">
+            {{register.errorMsg}}
+        </div>
+    </div>
+</div>
