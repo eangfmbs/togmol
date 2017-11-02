@@ -48,7 +48,7 @@
 
 </head>
 
-<body data-target="#nino-navbar" data-spy="scroll" ng-app="userApp" ng-controller="mainCtrl as main">
+<body data-target="#nino-navbar" data-spy="scroll" ng-app="userApp" ng-controller="mainCtrl as main" ng-show="main.loadingContent" ng-cloak>
 
 <!-- Header
 ================================================== -->
@@ -74,10 +74,10 @@
                         <ul class="nav navbar-nav">
                             <li><a href="/">Home</a></li>
                             <li><a href="/about">About-Test</a></li>
-                            <li><a href="/register">Register</a></li>
-                            <li><a href="/login">Login</a></li>
-                            <li><a href="/profile">Profile</a></li>
-                            <li><a href="/post">Post</a></li>
+                            <li ng-show="!main.isLoggedIn"><a href="/register">Register</a></li>
+                            <li ng-show="!main.isLoggedIn"><a href="/login">Login</a></li>
+                            <li ng-show="main.isLoggedIn"><a href="/profile">{{main.username}}</a></li>
+                            <li ng-show="main.isLoggedIn"><a href="#" ng-click="main.isLogout();">Logout</a> </li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
                     <ul class="nino-iconsGroup nav navbar-nav">
@@ -94,28 +94,28 @@
             <div class="carousel-inner" role="listbox">
                 <div class="item active">
                     <h2 class="nino-sectionHeading">
-                        <span class="nino-subHeading">Creative Template</span>
+                        <span class="nino-subHeading">Create Connection</span>
+                        ស្វាគមន៍មកកាន់តុមូល
+                    </h2>
+                    <a href="#" class="nino-btn">Learn more</a>
+                </div>
+                <div class="item">
+                    <h2 class="nino-sectionHeading">
+                        <span class="nino-subHeading">Ask for Information</span>
                         Welcome <br>to Togmol
                     </h2>
                     <a href="#" class="nino-btn">Learn more</a>
                 </div>
                 <div class="item">
                     <h2 class="nino-sectionHeading">
-                        <span class="nino-subHeading">Creative Template</span>
-                        Welcome <br>to Togmol
+                        <span class="nino-subHeading">Help People Anytime</span>
+                        ស្វាគមន៍មកកាន់តុមូល
                     </h2>
                     <a href="#" class="nino-btn">Learn more</a>
                 </div>
                 <div class="item">
                     <h2 class="nino-sectionHeading">
-                        <span class="nino-subHeading">Creative Template</span>
-                        Welcome <br>to Togmol
-                    </h2>
-                    <a href="#" class="nino-btn">Learn more</a>
-                </div>
-                <div class="item">
-                    <h2 class="nino-sectionHeading">
-                        <span class="nino-subHeading">Creative Template</span>
+                        <span class="nino-subHeading">Ask Me!</span>
                         Welcome <br>to Togmol
                     </h2>
                     <a href="#" class="nino-btn">Learn more</a>

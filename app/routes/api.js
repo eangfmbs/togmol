@@ -1,4 +1,6 @@
 var User    = require('../models/user');
+var jwt     = require('jsonwebtoken');
+var secret  = 'intelligent'; //where ever it just a secret
 
 //create new user route (http://localhost:8080/api/users)
 module.exports = function (router) {
@@ -21,16 +23,14 @@ module.exports = function (router) {
     });
 
     // USER LOGIN ROUTE
-    //create new LOGIN route (http://localhost:8080/api/authenticate)
+    //create new LOGIN route (http://localhost:8080/api/authenticate) with providing token to the user with a secret and keep them login in 24h
     router.post('/authenticate', function (req, res) {
         User.findOne({username: req.body.username}).select('username password email').exec(function (err, user) {
                 if(err) return handleError(err);
                 if(!user){
-                    res.json({success:false, message: 'Could not authenticate!'})
+                    res.json({success:false, message: "Can not authenticate. Maybe your username isn't correct!"})
                 } else if(user) {
-                    console.log("This is username: ",req.body.username)
                     if(req.body.password){
-                        console.log("The Password: " , req.body.password)
                         var validPassword = user.comparePassword(req.body.password);
                     } else {
                         res.json({success:false, message: "No password provided"})
@@ -38,10 +38,34 @@ module.exports = function (router) {
                     if(!validPassword){
                         res.json({success:false, message: "Your password is doesn't correct!"})
                     } else {
-                        res.json({success:true, message: "Authenticate Successfully"})
+                        var token = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
+                        res.json({success:true, message: "Authenticate Successfully", token: token});
                     }
                 }
             })
-    })
+    });
+    
+    //use middleware to decrypt the token
+    router.use(function (req, res, next) {
+        var token = req.body.token||req.body.query||req.headers['x-access-token'];
+        if(token){
+            //valid token
+            jwt.verify(token,secret,function (err, decoded) {
+                if(err) {
+                    res.json({success:false, message: "Your token is not validated or have been remove from the system after 24h"})
+                } else {
+                    req.decoded = decoded; //make it accessible in '/me' route
+                    next();
+                }
+            })
+        } else {
+            res.json({success: false, message: "No token provided!"})
+        }
+    });
+
+    //route to get the current user
+    router.post('/me', function (req, res) {
+        res.send(req.decoded)
+    });
     return router;
 }
