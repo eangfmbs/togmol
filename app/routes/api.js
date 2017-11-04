@@ -14,7 +14,28 @@ module.exports = function (router) {
         } else {
             user.save(function (err) {
                 if(err){
-                    res.json({success:false,message:'We are sorry! This username has been already taken. Please try another one.'})
+                    if(err.errors!=null){
+                        if(err.errors.email){
+                            return res.json({success: false, message: err.errors.email.message});
+                        } else if(err.errors.username){
+                            return res.json({success: false, message: err.errors.username.message});
+                        } else if(err.errors.password){
+                            return res.json({success: false, message: err.errors.password.message});
+                        } else {
+                            return res.json({success:false, message: err})
+                        }
+                    } else if(err){
+                        if(err.code == 11000){
+                            if(err.errmsg[61]=='e'){
+                                return res.json({success:false, message: 'Email address is already taken'})
+                            } else if(err.errmsg[61]=='u'){
+                                return res.json({success: false, message: 'Username is already taken'})
+                            }
+                        }
+                        else{
+                            return res.json({success:false, message: err})
+                        }
+                    }
                 } else {
                     res.json({success:true, message:'Congratulation! User has been created'})
                 }

@@ -1,11 +1,43 @@
 var mongoose = require('mongoose');
 var bcrypt   = require('bcrypt-nodejs');
+var validate = require('mongoose-validator');
+var passport = require('passport');
 var Schema = mongoose.Schema;
 
+var emailValidator = [
+    validate({
+        validator: 'isEmail',
+        message: 'This is not a valid email address'
+    }),
+    validate({
+        validator: 'isLength',
+        arguments: [5, 50],
+        message: 'Your email should has length btw {ARGS[0]} to {ARGS[1]}'
+    })
+];
+var usernameValidator = [
+    validate({
+        validator: 'isAlphanumeric',
+        message: 'Username must contain only alphabet and number only'
+    }),
+    validate({
+        validator: 'isLength',
+        arguments: [1, 30],
+        message: 'Your username should has length btw {ARGS[0]} to {ARGS[1]}'
+    })
+];
+var passwordValidator = [
+  validate({
+      validator: 'isLength',
+      arguments: [5, 30],
+      message: 'Your password should has length btw {ARGS[0]} to {ARGS[1]}'
+  })
+];
+
 var userSchema = new Schema({
-    username: {type: String, lowercase: true, required: true, unique: true},
-    password: {type: String, required: true},
-    email: {type: String, lowercase: true, required: true, unique: true}
+    username: {type: String, lowercase: true, required: true, unique: true, validate: usernameValidator},
+    password: {type: String, required: true, validate: passwordValidator},
+    email: {type: String, lowercase: true, required: true, unique: true, validate: emailValidator}
 });
 
 userSchema.pre('save', function(next) {
@@ -22,6 +54,22 @@ userSchema.pre('save', function(next) {
 
 userSchema.methods.comparePassword = function (password) {
     return bcrypt.compareSync(password, this.password);
-}
+};
+
+// Login with facebook
+//     FacebookStrategy = require('passport-facebook').Strategy;
+//
+//     passport.use(new FacebookStrategy({
+//         clientID: 125363151562234,
+//         clientSecret: ff693bd4ddf45060b28a5de72d0c62b0,
+//         callbackURL: "http://localhost:8080/auth/facebook/callback"
+//     },
+//     function(accessToken, refreshToken, profile, done) {
+//         User.findOne({username:req.body.username}, function(err, user) {
+//             if (err) { return done(err); }
+//             done(null, user);
+//         });
+//     }
+// ));
 
 module.exports = mongoose.model('User', userSchema);

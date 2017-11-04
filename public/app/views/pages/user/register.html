@@ -1,23 +1,31 @@
 <div class="container">
     <div class="page-header">Register Form</div>
-    <form ng-submit="register.regUser(regData)">
-        <table>
-            <tr>
-                <td><label>Email</label></td>
-                <td><input type="text" name="email" ng-model="register.regData.email"> </td>
-            </tr>
-            <tr>
-                <td><label>Username</label></td>
-                <td><input type="text" name="username" ng-model="register.regData.username"> </td>
-            </tr>
-            <tr>
-                <td><label>Password</label></td>
-                <td><input type="password" name="pwd" ng-model="register.regData.password"> </td>
-            </tr>
-            <button class="btn btn-primary" type="submit" name="register">ចុះឈ្មោះ</button>
-        </table>
-
+    <form name="regForm" ng-submit="register.regUser(regData)" novalidate>
+        <div ng-class="{'has-info':(regForm.username.$valid), 'has-warning':(!regForm.username.$valid && regForm.$submitted)}">
+            <label>Username</label>
+            <input class="form-control" type="text" name="username" ng-model="register.regData.username" required>
+            <p ng-show="(regForm.$submitted && regForm.username.$error.required)">User5 character</p>
+        </div>
+        <div ng-class="{'has-info':(regForm.username.$valid), 'has-warning':(!regForm.username.$valid && regForm.$submitted)}">
+            <label>Email</label>
+            <input class="form-control" type="text" name="email" ng-model="register.regData.email" required>
+            <p ng-show="(regForm.$submitted && regForm.email.$error.required)">May you check your email again</p>
+        </div>
+        <div ng-class="{'has-info':(regForm.username.$valid), 'has-warning':(!regForm.username.$valid && regForm.$submitted)}">
+            <label>Password</label>
+            <input class="form-control" type="password" name="password" ng-model="register.regData.password" required>
+            <p ng-show="(regForm.$submitted && regForm.password.$error.required)">Password at least has 5 characters</p>
+        </div>
+        <br>
+        <button class="btn btn-primary" type="submit" name="register">ចុះឈ្មោះ</button>
     </form>
+
+    <div>
+        <span>This is pristine {{regForm.$pristine}}</span>
+        <span>This is Touch {{regForm.$touched}}</span>
+        <span>This is error {{regForm.$error}}</span>
+        <!--<span>This is error {{regForm}}</span>-->
+    </div>
     <div class="jumbotron text-center" ng-show="register.loading">
         <span class="glyphicon glyphicon-repeat spinner"></span>
         <p>Loading...</p>
