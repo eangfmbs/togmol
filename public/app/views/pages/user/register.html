@@ -1,20 +1,33 @@
 <div class="container">
     <div class="page-header">Register Form</div>
-    <form name="regForm" ng-submit="register.regUser(regData)" novalidate>
-        <div ng-class="{'has-info':(regForm.username.$valid), 'has-warning':(!regForm.username.$valid && regForm.$submitted)}">
+    <form name="regForm" ng-submit="register.regUser(regData, regForm.$valid)" novalidate>
+        <div ng-class="{'has-info':(regForm.username.$valid)||(!register.usernameInvalid), 'has-error':(!regForm.username.$valid && regForm.$submitted)||(register.usernameInvalid)}">
             <label>Username</label>
-            <input class="form-control" type="text" name="username" ng-model="register.regData.username" required>
-            <p ng-show="(regForm.$submitted && regForm.username.$error.required)">User5 character</p>
+            <input class="form-control" type="text" name="username" ng-model="register.regData.username" ng-minlength="1" ng-maxlength="35" ng-pattern="^[a-zA-Z0-9_]*" required ng-blur="register.checkForUsername(regData)">
+            <p class="help-block" ng-show="(regForm.$submitted && regForm.username.$error.required)">Please fill your username. We need it :)</p>
+            <p class="help-block" ng-show="(register.usernameMsg && !regForm.username.$error.required && regForm.username.$valid && register.checkingUsername)">{{register.usernameMsg}}</p>
+            <ul class="help-block" ng-show="(regForm.$submitted && regForm.username.$error.minlength) || (regForm.$submitted && regForm.username.$error.maxlength)">
+              <li>your can only have max username length 35 characters</li>
+              <li>username can contain only number or alphabet or both</li>
+            </ul>
         </div>
-        <div ng-class="{'has-info':(regForm.username.$valid), 'has-warning':(!regForm.username.$valid && regForm.$submitted)}">
+        <div ng-class="{'has-info':(regForm.email.$valid)||(!register.emailInvalid), 'has-error':(!regForm.email.$valid && regForm.$submitted)||(register.emailInvalid)}">
             <label>Email</label>
-            <input class="form-control" type="text" name="email" ng-model="register.regData.email" required>
-            <p ng-show="(regForm.$submitted && regForm.email.$error.required)">May you check your email again</p>
+            <input class="form-control" type="text" name="email" ng-model="register.regData.email" ng-minlength="5" ng-maxlength="50" ng-pattern="^\w+[\w-\*^[a-zA-Z0-9_.-]*@[a-zA-Z0-9_.-]*" required ng-blur="register.checkForEmail(regData)">
+            <p class="help-block" ng-show="(regForm.$submitted && regForm.email.$error.required)">Please fill your email. We need it :)</p>
+            <p class="help-block" ng-show="(register.emailMsg && !regForm.email.$error.required && regForm.email.$valid && register.checkingEmail)">{{register.emailMsg}}</p>
+            <ul class="help-block" ng-show="(regForm.$submitted && regForm.username.$error.pattern) || (regForm.$submitted && regForm.email.$error.minlength) || (regForm.$submitted && regForm.email.$error.maxlength)">
+              <li>your can only have max email length 50 characters</li>
+            </ul>
         </div>
-        <div ng-class="{'has-info':(regForm.username.$valid), 'has-warning':(!regForm.username.$valid && regForm.$submitted)}">
+        <div ng-class="{'has-info':(regForm.password.$valid), 'has-error':(!regForm.password.$valid && regForm.$submitted)}">
             <label>Password</label>
-            <input class="form-control" type="password" name="password" ng-model="register.regData.password" required>
-            <p ng-show="(regForm.$submitted && regForm.password.$error.required)">Password at least has 5 characters</p>
+            <input class="form-control" type="password" name="password" ng-model="register.regData.password" ng-minlength="5" ng-maxlength="25" required>
+            <p class="help-block" ng-show="(regForm.$submitted && regForm.password.$error.required)">Please fill your password. We need it :)</p>
+            <ul class="help-block" ng-show="(regForm.$submitted && regForm.password.$error.minlength)||(regForm.$submitted && regForm.password.$error.maxlength)">
+              <li>your password length shold be between 5 to 25 characters</li>
+              <li>password can contain only number or alphabet or both</li>
+            </ul>
         </div>
         <br>
         <button class="btn btn-primary" type="submit" name="register">ចុះឈ្មោះ</button>

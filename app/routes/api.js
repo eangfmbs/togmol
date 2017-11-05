@@ -42,6 +42,29 @@ module.exports = function (router) {
             });
         }
     });
+//check for username while login
+    router.post('/checkusername', function (req, res) {
+        User.findOne({username: req.body.username}).select('username').exec(function (err, user) {
+            if(err) return handleError(err);
+            if(user){
+                res.json({success: false, message: 'username is already exist'})
+            } else {
+                res.json({success: true, message: 'your username is good to go'})
+            }
+        })
+    });
+
+    //check for password while login
+    router.post('/checkemail', function (req, res) {
+        User.findOne({email: req.body.email}).select('email').exec(function (err, user) {
+            if(err) return handleError(err);
+            if(user){
+                res.json({success: false, message: 'email is already exist'})
+            } else {
+                res.json({success: true, message: 'your email is good to go'})
+            }
+        })
+    });
 
     // USER LOGIN ROUTE
     //create new LOGIN route (http://localhost:8080/api/authenticate) with providing token to the user with a secret and keep them login in 24h

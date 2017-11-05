@@ -22,14 +22,14 @@ var usernameValidator = [
     }),
     validate({
         validator: 'isLength',
-        arguments: [1, 30],
+        arguments: [1, 35],
         message: 'Your username should has length btw {ARGS[0]} to {ARGS[1]}'
     })
 ];
 var passwordValidator = [
   validate({
       validator: 'isLength',
-      arguments: [5, 30],
+      arguments: [5, 25],
       message: 'Your password should has length btw {ARGS[0]} to {ARGS[1]}'
   })
 ];
