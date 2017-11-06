@@ -4,17 +4,6 @@ var validate = require('mongoose-validator');
 var passport = require('passport');
 var Schema = mongoose.Schema;
 
-var emailValidator = [
-    validate({
-        validator: 'isEmail',
-        message: 'This is not a valid email address'
-    }),
-    validate({
-        validator: 'isLength',
-        arguments: [5, 50],
-        message: 'Your email should has length btw {ARGS[0]} to {ARGS[1]}'
-    })
-];
 var usernameValidator = [
     validate({
         validator: 'isAlphanumeric',
@@ -24,6 +13,17 @@ var usernameValidator = [
         validator: 'isLength',
         arguments: [1, 35],
         message: 'Your username should has length btw {ARGS[0]} to {ARGS[1]}'
+    })
+];
+var emailValidator = [
+    validate({
+        validator: 'isEmail',
+        message: 'This is not a valid email address'
+    }),
+    validate({
+        validator: 'isLength',
+        arguments: [5, 50],
+        message: 'Your email should has length btw {ARGS[0]} to {ARGS[1]}'
     })
 ];
 var passwordValidator = [
@@ -36,12 +36,18 @@ var passwordValidator = [
 
 var userSchema = new Schema({
     username: {type: String, lowercase: true, required: true, unique: true, validate: usernameValidator},
-    password: {type: String, required: true, validate: passwordValidator},
-    email: {type: String, lowercase: true, required: true, unique: true, validate: emailValidator}
+    email: {type: String, lowercase: true, required: true, unique: true, validate: emailValidator},
+    password: {type: String, required: true, validate: passwordValidator, select: false},
+    activate: {type: Boolean, required: true, default: false},
+    temporarytoken: {type: String, required: true}
 });
 
 userSchema.pre('save', function(next) {
     var user = this;
+    //isModified here is to help while activate account and we no need to deal with password so it prevent from error
+    if(!user.isModified('password')){
+        return next();
+    }
     bcrypt.hash(user.password, null, null, function(err, hash){
         if(err){
             return next(err);

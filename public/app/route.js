@@ -22,8 +22,13 @@ var app = angular.module('appRoutes', ['ngRoute'])
         .when('/about', {
             templateUrl: '/app/views/pages/about.html'
         })
-        .when('/profile',{
+        .when('/profile', {
             templateUrl: '/app/views/pages/user/profile.html'
+        })
+        .when('/activate/:token', {
+            templateUrl: '/app/views/pages/user/activation/activate.html',
+            controller: 'emailCtrl',
+            controllerAs: 'email'
         })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({
