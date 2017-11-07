@@ -239,7 +239,45 @@ module.exports = function (router) {
 
         })
     });
-    
+
+    //Route Forget username
+    router.get('/forgetusername/:email', function (req, res) {
+        User.findOne({email: req.params.email}).select('email username').exec(function (err, user) {
+            if(err) {
+                return handleError(err);
+            } else {
+                if(!req.params.email){
+                    return res.json({success: false, message: "You haven't provided any email"})
+                } else {
+                    if(!user){
+                        return res.json({success: false, message: 'E-mail was not found in db'})
+                    } else {
+                        var email = {
+                            from: 'togmol.com',
+                            to: user.email,
+                            subject: 'Forget togmol username',
+                            text: 'Hello! We found that you are recently requested for your username that you forgot' +
+                            ' and here it is: '+ user.username,
+                            html: '<b>Hello </b>Hello! We found that you are recently requested for your username that you forgot' +
+                            ' and here it is: '+user.username
+                        };
+
+                        client.sendMail(email, function (err, info) {
+                            if(err) {
+                                console.log(error);
+                            } else {
+                                console.log('Msg Send: ', info.response);
+                            }
+                        });
+
+                        return res.json({success: true, message: 'Your username has been send to '+user.email+' please go and check it'})
+                    }
+                }
+
+            }
+        })
+    })
+
     //use middleware to decrypt the token
     router.use(function (req, res, next) {
         var token = req.body.token||req.body.query||req.headers['x-access-token'];

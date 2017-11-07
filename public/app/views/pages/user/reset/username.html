@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="page-header">Forget Username</div>
+    <form name="userForm" ng-submit="username.getUsername(emailData, userForm.$valid)" novalidate>
+        <div ng-class="{'has-info':(userForm.email.$valid), 'has-error':(!userForm.email.$valid && userForm.$submitted)}">
+        <label>E-mail</label>
+        <input class="form-control" ng-disabled="username.disabled" type="text" name="email" ng-model="username.emailData.email" ng-minlength="5" ng-maxlength="50" ng-pattern="/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/" required>
+        <p class="help-block" ng-show="(userForm.$submitted && userForm.email.$error.required)">Please fill your email. We need it :)</p>
+        <!--<p class="help-block" ng-show="(username.usernameMsg && !userForm.email.$error.required && userForm.email.$valid && username.checkingEmail)">{{username.usernameMsg}}</p>-->
+        <ul class="help-block" ng-show="(userForm.$submitted && userForm.email.$error.pattern) || (userForm.$submitted && userForm.email.$error.minlength) || (userForm.$submitted && userForm.email.$error.maxlength)">
+            <li>must contain '@'</li>
+            <li>cannot contain any special character</li>
+            <li>your can only have max email length 50 characters</li>
+        </ul>
+        </div>
+        <br><button ng-disabled="username.disabled" class="btn btn-primary" type="submit" name="submit">Submit</button>
+    </form>
+    <div class="jumbotron text-center" ng-show="username.loading">
+        <span class="glyphicon glyphicon-repeat spinner"></span>
+        <p>Loading...</p>
+    </div>
+    <div class="row show-hide-message" ng-show="username.successMsg">
+        <div class="alert alert-success">
+            {{username.successMsg}}
+        </div>
+    </div>
+    <div class="row show-hide-message" ng-show="username.errorMsg">
+        <div class="alert alert-danger">
+            {{username.errorMsg}}
+        </div>
+    </div>
+</div>

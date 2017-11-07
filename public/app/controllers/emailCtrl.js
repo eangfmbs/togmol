@@ -38,3 +38,33 @@ angular.module('emailController',['userServices'])
         })
     }
 })
+.controller('usernameCtrl', function (User) {
+    var app = this;
+    app.successMsg = false;
+    app.errorMsg = false;
+    app.disabled = false;
+    app.loading = true;
+    // appMsg.emailInvalid = false;
+    app.getUsername = function (emailData, valid) {
+        if(valid){
+            User.forgetUsername(app.emailData.email).then(function (data) {
+                if(data.data.success){
+                    app.disabled = true;
+                    app.errorMsg = false;
+                    app.loading = false;
+                    // appMsg.emailInvalid = false;
+                    app.successMsg = data.data.message;
+                } else {
+                    // appMsg.errorMsg = true;
+                    app.loading = false;
+                    // appMsg.emailInvalid = true;
+                    app.errorMsg = data.data.message;
+                }
+            })
+        } else {
+            app.loading = false;
+            app.errorMsg = "Please make sure you are input properly email"
+        }
+
+    }
+})

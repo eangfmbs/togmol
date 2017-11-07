@@ -24,6 +24,10 @@ angular.module('userServices',[])
     //User.resendLink4ActivationCredentialAgain(resendData)
     userFactory.resendLink4ActivationCredentialAgain = function (username) {
         return $http.put('/api/resend', username)
+    };
+    //User.forgotUsername(emailData)
+    userFactory.forgetUsername = function (emailData) {
+        return $http.get('/api/forgetusername/'+emailData);
     }
     return userFactory;
 });

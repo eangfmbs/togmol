@@ -35,6 +35,14 @@ var app = angular.module('appRoutes', ['ngRoute'])
             controller: 'resendCtrl',
             controllerAs: 'resend'
         })
+        .when('/resetpassword', {
+            templateUrl: '/app/views/pages/user/reset/resetpassword.html'
+        })
+        .when('/forgetusername', {
+            templateUrl: '/app/views/pages/user/reset/username.html',
+            controller: 'usernameCtrl',
+            controllerAs: 'username'
+        })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({
         enabled: true,
