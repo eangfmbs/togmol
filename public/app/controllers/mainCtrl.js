@@ -15,7 +15,7 @@ angular.module('mainControllers', ['authServices'])
                 appMsg.useremail = data.data.email;
                 appMsg.loadingContent = true;
             });
-            console.log("User is on login");
+            // console.log("User is on login");
         } else {
             appMsg.isLoggedIn = false;//use to show login tab when we are in login
             appMsg.username = '';
@@ -28,6 +28,8 @@ angular.module('mainControllers', ['authServices'])
         appMsg.loading = true;
         appMsg.errorMsg = false;
         appMsg.successMsg = false;
+        appMsg.expired = false;
+        appMsg.disabled = false;
         Auth.login(this.loginData)
             .then(function (data) {
                 if(data.data.success){
@@ -38,8 +40,15 @@ angular.module('mainControllers', ['authServices'])
                         $location.path('/home');
                     },10)
                 } else {
-                    appMsg.loading = false;
-                    appMsg.errorMsg = data.data.message;
+                    if(data.data.expired){
+                        appMsg.disabled = true;
+                        appMsg.expired = true;
+                        appMsg.loading = false;
+                        appMsg.errorMsg = data.data.message;
+                    } else {
+                        appMsg.loading = false;
+                        appMsg.errorMsg = data.data.message;
+                    }
                 }
             })
     };

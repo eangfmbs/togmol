@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="page-header">Resend Activation Link</div>
+    <form ng-submit="resend.doResend(resendData)">
+        <table>
+            <tr>
+                <td><label>Username</label></td>
+                <td><input ng-disabled="resend.disabled" type="text" name="username" ng-model="resend.resendData.username"> </td>
+            </tr>
+            <tr>
+                <td><label>Password</label></td>
+                <td><input ng-disabled="resend.disabled" type="password" name="pwd" ng-model="resend.resendData.password"> </td>
+            </tr>
+            <button ng-disabled="resend.disabled" class="btn btn-primary" type="submit" name="register">Resend</button>
+        </table>
+
+    </form>
+    <div class="jumbotron text-center" ng-show="resend.loading">
+        <span class="glyphicon glyphicon-repeat spinner"></span>
+        <p>Loading...</p>
+    </div>
+    <div class="row show-hide-message" ng-show="resend.successMsg">
+        <div class="alert alert-success">
+            {{resend.successMsg}}
+        </div>
+    </div>
+    <div class="row show-hide-message" ng-show="resend.errorMsg">
+        <div class="alert alert-danger">
+            {{resend.errorMsg}}
+        </div>
+    </div>
+</div>

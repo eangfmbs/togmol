@@ -4,13 +4,13 @@
         <table>
             <tr>
                 <td><label>Username</label></td>
-                <td><input type="text" name="username" ng-model="main.loginData.username"> </td>
+                <td><input ng-disabled="main.disabled" type="text" name="username" ng-model="main.loginData.username"> </td>
             </tr>
             <tr>
                 <td><label>Password</label></td>
-                <td><input type="password" name="pwd" ng-model="main.loginData.password"> </td>
+                <td><input ng-disabled="main.disable" type="password" name="pwd" ng-model="main.loginData.password"> </td>
             </tr>
-            <button class="btn btn-primary" type="submit" name="register">login</button>
+            <button ng-disabled="main.disabled" class="btn btn-primary" type="submit" name="login">login</button>
         </table>
 
     </form>
@@ -20,7 +20,7 @@
     </div>
     <div class="row show-hide-message" ng-show="main.errorMsg">
         <div class="alert alert-danger">
-            {{main.errorMsg}}
+            {{main.errorMsg}} &nbsp; <a href="/resend" ng-show="main.expired"><button type="button" class="btn btn-primary">Resend for activation link </button></a>
         </div>
     </div>
 </div>

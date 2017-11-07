@@ -10,10 +10,11 @@ angular.module('userControllers',['userServices'])
               .then(function (data) {
                   if(data.data.success){
                       appMsg.loading = false;
-                      appMsg.successMsg = data.data.message+' ... Redirecting to home page';
+                      appMsg.successMsg = data.data.message+' ... Redirecting to login page';
+                      console.log('showdata', data)
                       $timeout(function () {
                           $location.path('/');
-                      },500)
+                      },50)
                   } else {
                       appMsg.loading = false;
                       appMsg.errorMsg = data.data.message;

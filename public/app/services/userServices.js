@@ -16,6 +16,14 @@ angular.module('userServices',[])
     //User.activateAccount(token)
     userFactory.activateAccount = function (token) {
         return $http.put('/api/activate/'+token)
+    };
+    //User.resendActivateCredential(resendData)
+    userFactory.resendActivateCredential = function (resendData) {
+        return $http.post('/api/resend', resendData)
+    };
+    //User.resendLink4ActivationCredentialAgain(resendData)
+    userFactory.resendLink4ActivationCredentialAgain = function (username) {
+        return $http.put('/api/resend', username)
     }
     return userFactory;
 });

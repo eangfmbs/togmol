@@ -16,24 +16,6 @@ module.exports = function (router) {
         }
     }
 
-
-// using SendGrid's v3 Node.js Library
-// https://github.com/sendgrid/sendgrid-nodejs
-//     const sgMail = require('@sendgrid/mail');
-//     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-//     const msg = {
-//         to: 'test@example.com',
-//         from: 'test@example.com',
-//         subject: 'Sending with SendGrid is Fun',
-//         text: 'and easy to do anywhere, even with Node.js',
-//         html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-//     };
-//     sgMail.send(msg);
-//
-//
-
-
-
     var client = nodemailer.createTransport(sgTransport(options));
 
     //http://localhost:8080/api/users
@@ -74,14 +56,14 @@ module.exports = function (router) {
                 } else {
                     //email part
                     var email = {
-                        from: 'staff@localhost.com',
+                        from: 'togmol.com',
                         to: user.email,
                         subject: 'Activation your togmol link',
-                        text: 'Hello '+user.username+ 'this is your activation link for activation togmol account please click on the link below to' +
-                        ' complete your activation http://localhost:8080/activate/'+user.temporarytoken,
-                        html: '<b>Hello </b><strong>user.username</strong> this is your activation link for activation togmol account please click on the link below to' +
+                        text: 'Hello '+ user.username + 'this is your activation link for activation togmol account please click on the link below to' +
+                        ' complete your activation http://localhost:8080/activate/'+ user.temporarytoken,
+                        html: '<b>Hello </b><strong>' + user.username +'</strong> this is your activation link for activation togmol account please click on the link below to' +
                         ' complete your activation <br>' +
-                        '<a href="http://localhost:8080/activate/'+user.temporarytoken+'">http://localhost:8080/activate/</a>'
+                        '<a href="http://localhost:8080/activate/'+ user.temporarytoken +'">http://localhost:8080/activate/</a>'
                     };
 
                     client.sendMail(email, function (err, info) {
@@ -125,25 +107,90 @@ module.exports = function (router) {
     // USER LOGIN ROUTE
     //create new LOGIN route (http://localhost:8080/api/authenticate) with providing token to the user with a secret and keep them login in 24h
     router.post('/authenticate', function (req, res) {
-        User.findOne({username: req.body.username}).select('username password email').exec(function (err, user) {
+        User.findOne({username: req.body.username}).select('username password email activate').exec(function (err, user) {
                 if(err) return handleError(err);
                 if(!user){
-                    res.json({success:false, message: "Can not authenticate. Maybe your username isn't correct!"})
+                    return res.json({success:false, message: "Can not authenticate. Maybe your username isn't correct!"})
                 } else if(user) {
                     if(req.body.password){
                         var validPassword = user.comparePassword(req.body.password);
                     } else {
-                        res.json({success:false, message: "No password provided"})
+                        return res.json({success:false, message: "No password provided"})
                     }
                     if(!validPassword){
-                        res.json({success:false, message: "Your password is doesn't correct!"})
-                    } else {
+                        return res.json({success:false, message: "Your password is doesn't correct!"})
+                    } else if(!user.activate){
+                        return res.json({success: false, expired: true, message: "You haven't activate your account yet. Please go to you email and click activate account first or just click on this to get new link for activation"})
+                    }
+                    else {
                         var token = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
-                        res.json({success:true, message: "Authenticate Successfully", token: token});
+                        return res.json({success:true, message: "Authenticate Successfully", token: token});
                     }
                 }
             })
     });
+
+    // USER Resend for activation account
+    router.post('/resend', function (req, res) {
+        User.findOne({username: req.body.username}).select('username password activate').exec(function (err, user) {
+            if(err) return handleError(err);
+            if(!user){
+                return res.json({success:false, message: "Can not authenticate. Maybe your username isn't correct!"})
+            } else if(user) {
+                if(req.body.password){
+                    var validPassword = user.comparePassword(req.body.password);
+                } else {
+                    return res.json({success:false, message: "No password provided"})
+                }
+                if(!validPassword){
+                    return res.json({success:false, message: "Your password is doesn't correct!"})
+                } else if(user.activate){
+                    return res.json({success: true, message: "Your account is already activated"})
+                }
+                else {
+                    return res.json({success: true, user: user});
+                }
+            }
+        })
+    });
+
+    //route send to update resend activation of token
+    router.put('/resend', function (req, res) {
+        User.findOne({username: req.body.username}).select('username temporarytoken activate email').exec(function (err, user) {
+            if(err){
+                return handleError(err);
+            } else {
+                user.temporarytoken = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
+                user.save(function (err) {
+                    if(err){
+                        return handleError(err);
+                    } else {
+                        //email part
+                        var email = {
+                            from: 'togmol.com',
+                            to: user.email,
+                            subject: 'Request Activation Link',
+                            text: 'Hello '+ user.username + 'you recently requested for activation togmol account please click on the link below to' +
+                            ' complete your activation http://localhost:8080/activate/'+ user.temporarytoken,
+                            html: '<b>Hello </b><strong>' + user.username +'</strong> you recently requested for activation togmol account please click on the link below to' +
+                            ' complete your activation <br>' +
+                            '<a href="http://localhost:8080/activate/'+ user.temporarytoken +'">http://localhost:8080/activate/</a>'
+                        };
+
+                        client.sendMail(email, function (err, info) {
+                            if(err) {
+                                console.log("This is error from sendMail", err);
+                            } else {
+                                console.log('Msg Send: ', info.response);
+                            }
+                        });
+                        //end email part
+                        return res.json({success:true, message: 'Activation link has been send to '+user.email+'!'})
+                    }
+                })
+            }
+        })
+    })
 
     //get token from email
     router.put('/activate/:token', function (req, res) {
@@ -170,9 +217,9 @@ module.exports = function (router) {
                                 from: 'togmol.com',
                                 to: user.email,
                                 subject: 'Congrats from togmol activation account',
-                                text: 'Hello '+user.username+ '. Your account is now successfully activated' +
-                                ' complete your activation http://localhost:8080/activate/'+user.temporarytoken,
-                                html: '<b>Hello </b><strong>user.username</strong> . Your account is now successfully activated'
+                                text: 'Hello '+ user.username + '. Your account is now successfully activated' +
+                                ' complete your activation http://localhost:8080/activate/'+ user.temporarytoken,
+                                html: '<b>Hello </b><strong>'+user.username+'</strong> . Your account is now successfully activated'
                             };
 
                             client.sendMail(email, function (err, info) {
@@ -191,7 +238,7 @@ module.exports = function (router) {
 
 
         })
-    })
+    });
     
     //use middleware to decrypt the token
     router.use(function (req, res, next) {
@@ -216,4 +263,4 @@ module.exports = function (router) {
         res.send(req.decoded)
     });
     return router;
-}
+};

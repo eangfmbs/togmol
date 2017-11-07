@@ -9,7 +9,7 @@ var app = angular.module('appRoutes', ['ngRoute'])
             templateUrl: '/app/views/pages/user/register.html',
             controller: 'regCtrl',
             controllerAs: 'register',
-            authenticated: false
+            authenticated: false //people that already login cannot access this page
         })
         .when('/login', {
             templateUrl: '/app/views/pages/user/login.html',
@@ -29,6 +29,11 @@ var app = angular.module('appRoutes', ['ngRoute'])
             templateUrl: '/app/views/pages/user/activation/activate.html',
             controller: 'emailCtrl',
             controllerAs: 'email'
+        })
+        .when('/resend', {
+            templateUrl: '/app/views/pages/user/activation/resend.html',
+            controller: 'resendCtrl',
+            controllerAs: 'resend'
         })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({
