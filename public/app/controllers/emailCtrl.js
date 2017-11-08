@@ -68,3 +68,62 @@ angular.module('emailController',['userServices'])
 
     }
 })
+.controller('passwordCtrl', function (User) {
+    var app = this;
+    app.successMsg = false;
+    app.errorMsg = false;
+    app.disabled = false;
+    app.loading = true;
+    app.reqPassword = function (resetData, valid) {
+
+        if(valid){
+            User.forgetPassword(app.resetData).then(function (data) {
+                if(data.data.success){
+                    app.disabled = true;
+                    app.errorMsg = false;
+                    app.loading = false;
+                    // appMsg.emailInvalid = false;
+                    app.successMsg = data.data.message;
+                } else {
+                    // appMsg.errorMsg = true;
+                    app.loading = false;
+                    // appMsg.emailInvalid = true;
+                    app.errorMsg = data.data.message;
+                }
+            })
+        } else {
+            app.loading = false;
+            app.errorMsg = "Please make sure you are input properly email"
+        }
+    }
+})
+.controller('resetPasswordCtrl', function ($routeParams, User) {
+    var app = this;
+    app.hideFormIfExpired = true;
+    User.resetNewPassword($routeParams.token).then(function (data) {
+        if(data.data.success){
+            app.hideFormIfExpired = false;
+            app.successMsg = "Please enter your new password!";
+        } else {
+            app.errorMsg = data.data.message;
+        }
+        
+    })
+
+    app.resetPassword = function (passwordData, valid) {
+        app.successMsg = false;
+        app.errorMsg = false;
+        if(valid){
+            User.savePassword(app.passwordData).then(function (data) {
+                if(data.data.success){
+                    app.successMsg = data.data.message;
+                } else {
+                    app.errorMsg = data.data.message;
+                }
+            })
+        } else {
+            app.errorMsg = "Please make sure your passwords are enter properly"
+        }
+
+    }
+})

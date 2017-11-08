@@ -39,7 +39,8 @@ var userSchema = new Schema({
     email: {type: String, lowercase: true, required: true, unique: true, validate: emailValidator},
     password: {type: String, required: true, validate: passwordValidator, select: false},
     activate: {type: Boolean, required: true, default: false},
-    temporarytoken: {type: String, required: true}
+    temporarytoken: {type: String, required: true},
+    resettoken: {type: String, required: false}
 });
 
 userSchema.pre('save', function(next) {

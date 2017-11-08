@@ -28,6 +28,18 @@ angular.module('userServices',[])
     //User.forgotUsername(emailData)
     userFactory.forgetUsername = function (emailData) {
         return $http.get('/api/forgetusername/'+emailData);
+    };
+    //User.forgetPassword(resetData)
+    userFactory.forgetPassword = function (resetData) {
+        return $http.put('/api/forgetpassword', resetData)
+    };
+    //User.setNewPassword(token)
+    userFactory.resetNewPassword = function (token) {
+        return $http.get('/api/forgetpassword/'+token)
+    };
+    //User.savePassword(passwordData)
+    userFactory.savePassword = function (passwordData) {
+        return $http.put('/api/savenewpassword', passwordData)
     }
     return userFactory;
 });

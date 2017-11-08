@@ -7,10 +7,8 @@
                 <label>Password</label>
                 <td><input class="form-control" ng-disabled="main.disable" type="password" name="pwd" ng-model="main.loginData.password"> </td>
                 <br><button ng-disabled="main.disabled" class="btn btn-primary" type="submit" name="login">login</button>
-        <a href="/resetpassword"><button  class="btn btn-danger" type="submit" name="login">forget password</button></a>
+        <a href="/forgetpassword"><button  class="btn btn-danger" type="submit" name="login">forget password</button></a>
         <a href="/forgetusername"><button  class="btn btn-primary" type="submit" name="login">forget username</button></a>
-
-
     </form>
     <div class="jumbotron text-center" ng-show="main.loading">
         <span class="glyphicon glyphicon-repeat spinner"></span>

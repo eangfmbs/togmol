@@ -242,7 +242,7 @@ module.exports = function (router) {
 
     //Route Forget username
     router.get('/forgetusername/:email', function (req, res) {
-        User.findOne({email: req.params.email}).select('email username').exec(function (err, user) {
+        User.findOne({email: req.params.email}).select('email username activate').exec(function (err, user) {
             if(err) {
                 return handleError(err);
             } else {
@@ -251,7 +251,10 @@ module.exports = function (router) {
                 } else {
                     if(!user){
                         return res.json({success: false, message: 'E-mail was not found in db'})
-                    } else {
+                    } else if(!user.activate){
+                        return res.json({success: false, message: "You haven't activated your account yet. We will allow to request to see your username unless your account has already activated"})
+                    }
+                    else {
                         var email = {
                             from: 'togmol.com',
                             to: user.email,
@@ -276,13 +279,112 @@ module.exports = function (router) {
 
             }
         })
+    });
+
+    //Route forget password and request to email to get new one
+    router.put('/forgetpassword', function (req, res) {
+        //we need a token to send to the user to get new token
+        console.log("Hello :", req.body.password)
+        User.findOne({email: req.body.password}).select('username email activate resettoken').exec(function (err, user) {
+            if(err){
+                return handleError(err);
+            }
+            if(!user){
+                return res.json({success: false, message: 'Your email not found in our DB'})
+            } else if(!user.activate){
+                return res.json({success: false, message: "You haven't activated your account yet. We will allow to reset new password unless your account has already activated"})
+            }
+            else {
+                //when user have token they are allow to set new password because token tell that this is ur valid account
+                user.resettoken = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
+                var email = {
+                    from: 'togmol.com',
+                    to: user.email,
+                    subject: 'Forget togmol password',
+                    text: 'Hello! We found that you are recently requested for new password' +
+                    ' please click on the link below to set new password:  http://localhost:8080/resetpassword/'+ user.resettoken,
+                    html: '<b>Hello </b><strong>' + user.username +'</strong> you recently requested for new password please click on the link below to' +
+                    ' set new password <br>' +
+                    '<a href="http://localhost:8080/resetpassword/'+ user.resettoken +'">http://localhost:8080/resetpassword/</a>'
+                };
+
+                client.sendMail(email, function (err, info) {
+                    if(err) {
+                        console.log(error);
+                    } else {
+                        console.log('Msg Send: ', info.response);
+                    }
+                });
+
+                return res.json({success: true, message: 'Now you can go to your email and request for new password'})
+            }
+        })
+    });
+
+    //Route set new password that receive from the email
+    router.get('/forgetpassword/:token', function (req, res) {
+        User.findOne({resettoken: req.params.token}).select('username email password').exec(function (err, user) {
+            if(err) {
+                return handleError(err);
+            }
+            var token = req.params.token;
+            jwt.verify(token,secret,function (err, decoded) {
+                if(err) {
+                    return res.json({success:false, message: "Your token is not validated or have been remove from the system after 24h mean that it is expired"})
+                } else {
+                    // if(!user){
+                    //     return res.json({success: false, message: 'Your token is expired'})
+                    // } else {
+                        return res.json({success: true, user:user})
+                    //}
+                }
+            });
+            // return res.json({success: true, message: "Please enter your new password!"})
+        })
+    });
+
+    //Route save password after reset for new password
+    router.put('/savenewpassword', function (req, res) {
+        User.findOne({username: req.body.username}).select('username resettoken password email').exec(function (err, user) {
+            if(err){
+                handleError(err);
+            }
+            if(req.body.password!=null || req.body.password != ''){
+                user.password = req.body.password;
+                user.resettoken = false;
+                user.save(function (err) {
+                    if(err){
+                        return res.json({success: false, message: err})
+                    } else{
+                        var email = {
+                            from: 'togmol.com',
+                            to: user.email,
+                            subject: 'Successfully Reset Password',
+                            text: 'Congratulation ' + user.username + 'your new password has been reset already. pleas go to togmol.com and try to login with your new password',
+                            html: '<b>Congratulation </b><strong>' + user.username +'</strong> your new password has been reset already. pleas go to togmol.com and try to login with your new password'
+                        };
+
+                        client.sendMail(email, function (err, info) {
+                            if(err) {
+                                console.log(error);
+                            } else {
+                                console.log('Msg Send: ', info.response);
+                            }
+                        });
+                        return res.json({success: true, message: "Password is reset successfully!"})
+                    }
+                })
+            } else {
+                return res.json({success: false, message: "Password has not provided yet"})
+            }
+        })
     })
 
     //use middleware to decrypt the token
     router.use(function (req, res, next) {
         var token = req.body.token||req.body.query||req.headers['x-access-token'];
         if(token){
-            //valid token
+            //verify that is that valid token
             jwt.verify(token,secret,function (err, decoded) {
                 if(err) {
                     res.json({success:false, message: "Your token is not validated or have been remove from the system after 24h"})
