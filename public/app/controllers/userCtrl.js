@@ -61,4 +61,32 @@ angular.module('userControllers',['userServices'])
         })
     }
 
-});
+
+})
+    .directive('match',function () {
+        return {
+            restrict: 'A',
+            controller: function ($scope) {
+                $scope.confirmed = false;
+                $scope.doConfirm = function (value) {
+                    value.forEach(function (ele) {
+                        if($scope.confirmMainPassword == ele){
+                            $scope.confirmed = true;
+                        } else {
+                            $scope.confirmed = false;
+                        }
+                    })
+                }
+            },
+            link: function (scope, element, attrs) {
+                attrs.$observe('match', function () { //match is call attribute
+                    scope.matches = JSON.parse(attrs.match);
+                    scope.doConfirm(scope.matches);
+                });
+                scope.$watch('confirmMainPassword', function () {
+                    scope.matches = JSON.parse(attrs.match);
+                    scope.doConfirm(scope.matches);
+                })
+            }
+        }
+    })

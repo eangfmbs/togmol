@@ -97,23 +97,25 @@ angular.module('emailController',['userServices'])
         }
     }
 })
-.controller('resetPasswordCtrl', function ($routeParams, User) {
+.controller('resetPasswordCtrl', function ($routeParams, User, $scope) {
     var app = this;
     app.hideFormIfExpired = true;
     User.resetNewPassword($routeParams.token).then(function (data) {
         if(data.data.success){
             app.hideFormIfExpired = false;
             app.successMsg = "Please enter your new password!";
+            $scope.username = data.data.user.username;
         } else {
             app.errorMsg = data.data.message;
         }
         
     })
 
-    app.resetPassword = function (passwordData, valid) {
+    app.resetPassword = function (passwordData, valid, confirmed) {
         app.successMsg = false;
         app.errorMsg = false;
-        if(valid){
+        app.passwordData.username = $scope.username;
+        if(valid && confirmed){
             User.savePassword(app.passwordData).then(function (data) {
                 if(data.data.success){
                     app.successMsg = data.data.message;

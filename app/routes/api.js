@@ -19,7 +19,7 @@ module.exports = function (router) {
     var client = nodemailer.createTransport(sgTransport(options));
 
     //http://localhost:8080/api/users
-    //User registration route
+    //User REGISTRATION ROUTE
     router.post('/users', function (req, res) {
         var user = new User();
         user.username = req.body.username;
@@ -284,7 +284,6 @@ module.exports = function (router) {
     //Route forget password and request to email to get new one
     router.put('/forgetpassword', function (req, res) {
         //we need a token to send to the user to get new token
-        console.log("Hello :", req.body.password)
         User.findOne({email: req.body.password}).select('username email activate resettoken').exec(function (err, user) {
             if(err){
                 return handleError(err);
@@ -297,33 +296,39 @@ module.exports = function (router) {
             else {
                 //when user have token they are allow to set new password because token tell that this is ur valid account
                 user.resettoken = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
-                var email = {
-                    from: 'togmol.com',
-                    to: user.email,
-                    subject: 'Forget togmol password',
-                    text: 'Hello! We found that you are recently requested for new password' +
-                    ' please click on the link below to set new password:  http://localhost:8080/resetpassword/'+ user.resettoken,
-                    html: '<b>Hello </b><strong>' + user.username +'</strong> you recently requested for new password please click on the link below to' +
-                    ' set new password <br>' +
-                    '<a href="http://localhost:8080/resetpassword/'+ user.resettoken +'">http://localhost:8080/resetpassword/</a>'
-                };
-
-                client.sendMail(email, function (err, info) {
-                    if(err) {
-                        console.log(error);
+                user.save(function (err) {
+                    if(err){
+                        return handleError(err);
                     } else {
-                        console.log('Msg Send: ', info.response);
-                    }
-                });
+                        var email = {
+                            from: 'togmol.com',
+                            to: user.email,
+                            subject: 'Forget togmol password',
+                            text: 'Hello! We found that you are recently requested for new password' +
+                            ' please click on the link below to set new password:  http://localhost:8080/resetpassword/'+ user.resettoken,
+                            html: '<b>Hello </b><strong>' + user.username +'</strong> you recently requested for new password please click on the link below to' +
+                            ' set new password <br>' +
+                            '<a href="http://localhost:8080/resetpassword/'+ user.resettoken +'">http://localhost:8080/resetpassword/</a>'
+                        };
 
-                return res.json({success: true, message: 'Now you can go to your email and request for new password'})
+                        client.sendMail(email, function (err, info) {
+                            if(err) {
+                                console.log(error);
+                            }
+                        });
+
+                        return res.json({success: true, message: 'Now you can go to your email and request for new password'})
+                    }
+                })
+
             }
         })
     });
 
     //Route set new password that receive from the email
     router.get('/forgetpassword/:token', function (req, res) {
-        User.findOne({resettoken: req.params.token}).select('username email password').exec(function (err, user) {
+
+        User.findOne({resettoken: req.params.token}).select().exec(function (err, user) {
             if(err) {
                 return handleError(err);
             }
@@ -332,11 +337,12 @@ module.exports = function (router) {
                 if(err) {
                     return res.json({success:false, message: "Your token is not validated or have been remove from the system after 24h mean that it is expired"})
                 } else {
-                    // if(!user){
-                    //     return res.json({success: false, message: 'Your token is expired'})
-                    // } else {
-                        return res.json({success: true, user:user})
-                    //}
+                    console.log("The user token is: ",token);
+                    if(!user){
+                        return res.json({success: false, message: 'Your token is expired'})
+                    } else {
+                    res.json({success: true, user:user})
+                    }
                 }
             });
             // return res.json({success: true, message: "Please enter your new password!"})
@@ -345,7 +351,7 @@ module.exports = function (router) {
 
     //Route save password after reset for new password
     router.put('/savenewpassword', function (req, res) {
-        User.findOne({username: req.body.username}).select('username resettoken password email').exec(function (err, user) {
+        User.findOne({username: req.body.username}).select('username password email').exec(function (err, user) {
             if(err){
                 handleError(err);
             }
