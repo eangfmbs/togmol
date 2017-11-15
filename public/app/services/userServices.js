@@ -40,6 +40,14 @@ angular.module('userServices',[])
     //User.savePassword(passwordData)
     userFactory.savePassword = function (passwordData) {
         return $http.put('/api/savenewpassword', passwordData)
+    };
+    //User.getPermission()
+    userFactory.getPermission = function () {
+        return $http.get('/api/permission')
+    };
+    //User.getAllUsersForManagement()
+    userFactory.getAllUsers4Management = function () {
+        return $http.get('/api/management')
     }
     return userFactory;
 });

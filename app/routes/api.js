@@ -395,7 +395,7 @@ module.exports = function (router) {
                 if(err) {
                     res.json({success:false, message: "Your token is not validated or have been remove from the system after 24h"})
                 } else {
-                    req.decoded = decoded; //make it accessible in '/me' route
+                    req.decoded = decoded; //make it accessible in '/me' route as well as all other route below this middleware
                     next();
                 }
             })
@@ -408,5 +408,34 @@ module.exports = function (router) {
     router.post('/me', function (req, res) {
         res.send(req.decoded)
     });
+
+    //create a route to get what permission that user has
+    router.get('/permission', function (req, res) {
+        User.findOne({username: req.decoded.username}, function (err, user) {
+            if(err) handleError(err);
+            return res.json({success: true, permission: user.permission})
+        })
+    });
+
+    //a route to fetch all data for management control.
+    router.get('/management', function (req, res) {
+        User.find({}, function (err, users) {
+            if(err){
+                handleError(err);
+            }
+            User.findOne({username: req.decoded.username}, function (err, mainUser) { //to verify that user have permission to pull data out or not
+                if(err){
+                    handleError(err);
+                }
+                if(mainUser.permission === 'admin' || mainUser.permission === 'moderator'){
+                    return res.json({success: true, users: users, permission: mainUser.permission})
+                } else {
+                    return res.json({success: false, message: "You do not have the permission to control on this management!"})
+                }
+            })
+        })
+    })
+
+
     return router;
 };

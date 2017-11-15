@@ -38,6 +38,7 @@
     <script src="/app/controllers/userCtrl.js"></script>
     <script src="/app/controllers/mainCtrl.js"></script>
     <script src="/app/controllers/emailCtrl.js"></script>
+    <script src="/app/controllers/managementCtrl.js"></script>
 
     <!--angular services-->
     <script src="/app/services/userServices.js"></script>
@@ -75,6 +76,7 @@
                         <ul class="nav navbar-nav">
                             <li><a href="/">Home</a></li>
                             <li><a href="/about">Ask</a></li>
+                            <li ng-show="main.isLoggedIn && main.authorized"><a href="/management">Management</a></li>
                             <li ng-show="!main.isLoggedIn"><a href="/register">Register</a></li>
                             <li ng-show="!main.isLoggedIn"><a href="/login">Login</a></li>
                             <li ng-show="main.isLoggedIn"><a href="/profile">{{main.username}}</a></li>
@@ -96,7 +98,7 @@
                 <div class="item active">
                     <h2 class="nino-sectionHeading">
                         <span class="nino-subHeading">Create Connection</span>
-                        ស្វាគមន៍មកកាន់តុមូល
+                        <span class="nino-subHeading">ស្វាគមន៍មកកាន់តុមូល</span>
                     </h2>
                     <a href="#" class="nino-btn">Learn more</a>
                 </div>
@@ -217,11 +219,8 @@
                             <a href="" class="nino-icon"><i class="mdi mdi-facebook"></i></a>
                             <a href="" class="nino-icon"><i class="mdi mdi-twitter"></i></a>
                             <a href="" class="nino-icon"><i class="mdi mdi-instagram"></i></a>
-                            <a href="" class="nino-icon"><i class="mdi mdi-pinterest"></i></a>
                             <a href="" class="nino-icon"><i class="mdi mdi-google-plus"></i></a>
                             <a href="" class="nino-icon"><i class="mdi mdi-youtube-play"></i></a>
-                            <a href="" class="nino-icon"><i class="mdi mdi-dribbble"></i></a>
-                            <a href="" class="nino-icon"><i class="mdi mdi-tumblr"></i></a>
                         </div>
                     </div>
                     <form action="" class="nino-subscribeForm">

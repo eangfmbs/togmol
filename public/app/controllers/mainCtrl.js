@@ -1,5 +1,5 @@
 angular.module('mainControllers', ['authServices'])
-.controller('mainCtrl', function (Auth,$timeout,$location,$rootScope,$interval,$window) {
+.controller('mainCtrl', function (Auth,$timeout,$location,$rootScope,$interval,$window,User) {
     var appMsg = this;
     appMsg.loadingContent = false; //don't show html part of angular until it finish loading data
     //this will help preventing user to see any content that surrounding data of angular syntax like {{..}}
@@ -50,6 +50,15 @@ angular.module('mainControllers', ['authServices'])
             Auth.getUserInfo().then(function (data) {
                 appMsg.username = data.data.username;
                 appMsg.useremail = data.data.email;
+                User.getPermission().then(function (data) {
+                    if(data.data.permission === 'admin' || data.data.permission === 'moderator'){
+                        appMsg.authorized = true;
+                        appMsg.loadingContent = true;
+                    } else {
+
+                        appMsg.loadingContent = true;
+                    }
+                })
                 appMsg.loadingContent = true;
             });
             // console.log("User is on login");

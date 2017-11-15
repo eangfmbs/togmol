@@ -40,7 +40,9 @@ var userSchema = new Schema({
     password: {type: String, required: true, validate: passwordValidator, select: false},
     activate: {type: Boolean, required: true, default: false},
     temporarytoken: {type: String, required: true},
-    resettoken: {type: String, required: false}
+    resettoken: {type: String, required: false},
+    permission: {type: String, required: true, default: 'user'},
+    date: { type: Date, required: true, default: Date.now },
 });
 
 userSchema.pre('save', function(next) {
