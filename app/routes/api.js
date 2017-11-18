@@ -421,7 +421,7 @@ module.exports = function (router) {
     router.get('/management', function (req, res) {
         User.find({}, function (err, users) {
             if(err){
-                handleError(err);
+                return handleError(err);
             }
             User.findOne({username: req.decoded.username}, function (err, mainUser) { //to verify that user have permission to pull data out or not
                 if(err){
@@ -434,8 +434,191 @@ module.exports = function (router) {
                 }
             })
         })
+    });
+
+    //route on click to delete user
+    router.delete('/management/:username', function(req, res){
+      var deleteUser = req.params.username;
+      User.findOne({username: req.decoded.username}, function(err, mainUser){
+        if(err){
+          return handleError(err);
+        }
+        if(mainUser.permission !== 'admin'){
+          return res.json({success: false, message: 'Insuficient Permission!'});
+        } else {
+          User.findOneAndRemove({username: deleteUser}, function(err, user){
+            if(err){
+              handleError(err);
+            } else {
+              return res.json({success: true, message: 'User is deleted from DB'});
+            }
+          })
+        }
+      })
     })
 
+    //route to catch _id from url when admin or moderator updata updateData
+    router.get('/editusername/:id', function(req, res){
+      var editUsernameId = req.params.id;
+      User.findOne({username: req.decoded.username}, function(err, mainUser){
+        if(err){
+          return handleError(err);
+        }
+        if(mainUser.permission === 'admin' || mainUser.permission === 'moderator'){
+          User.findOne({_id: editUsernameId}, function(err, user){
+            if(err){
+              return handleError(err);
+            } else {
+              res.json({success: true, user:user})
+            }
+          })
+        } else {
+          return res.json({success: false, message: 'You are Insufficience Permission'})
+        }
+      })
+    })
+
+    //route reponsible for update/edit all data in Mangaement such as username, email, permission
+    router.put('/editmanagement', function(req, res){
+      var editUser = req.body._id;
+      console.log("The id is: ", editUser)
+
+      if(req.body.username) var newUsername = req.body.username; //if username is provided and so on for other ifs
+      if(req.body.email) var newEmail = req.body.email;
+      if(req.body.permission) var newPermission = req.body.permission;
+      User.findOne({username: req.decoded.username}, function(err, mainUser){ //check for mainUser bec this is the user that update data of other
+        if(err){
+          return handleError(err);
+        }
+        //check if new username is provided
+        if(newUsername){
+          if(mainUser.permission === 'admin' || 'moderator'){
+            User.findOne({_id: editUser}, function(err, user){ //check this user is the user that has been update by main user
+              if(err){
+                return handleError(err);
+              } else {
+                user.username = newUsername;
+                user.save(function(err){
+                  if(err){
+                    handleError(err);
+                  } else {
+                    return res.json({success: true, message: 'Your new username have been update in our database :)'})
+                  }
+                })
+              }
+            })
+          } else {
+          return res.json({success: false, message: 'Your are Insufficience Permission!'})
+          }
+        }
+        //check if new email is provided
+        if(newEmail){
+          if(mainUser.permission === 'admin' || mainUser.permission === 'moderator'){
+            User.findOne({_id: editUser}, function(err, user){
+              if(err){
+                return handleError(err);
+              } else {
+                user.email = newEmail;
+                user.save(function(err){
+                  if(err){
+                    return handleError(err);
+                  } else {
+                    return res.json({success: true, message: 'Your new E-mail have been update in our database :)'})
+                  }
+                })
+              }
+            })
+          } else {
+            return res.json({success: false, message: 'Your are Insufficience Permission!'})
+          }
+        }
+
+
+
+        //check if new permission is provided
+        if(newPermission){
+          if(mainUser.permission === 'admin' || mainUser.permission === 'moderator'){
+            findOne({_id: editUser}, function(err, user){
+                if(err){
+                  return handleError(err);
+                }
+                else{
+                      if(newPermission === 'user'){
+                        if(user.permission === 'admin'){
+                          if(mainUser !== 'admin'){
+                            return res.json({success: false, message: 'Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
+                          } else {
+                            user.permission = newPermission;
+                            user.save(function(err){
+                              if(err){
+                                return handleError(err);
+                              } else {
+                                return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the user range'})
+                              }
+                            })
+                          }
+                        } else {
+                          user.permission = newPermission;
+                          user.save(function(err){
+                            if(err){
+                              console.log("Hello")
+                              return handleError(err);
+                            } else {
+                               res.json({success: true, message: 'You just downgrade '+user.username+' last moment'})
+                          }
+                        })
+                      }
+                    }
+
+                    if(newPermission === 'moderator'){
+                      if(user.permission === 'admin'){
+                        if(mainUser !== 'admin'){
+                          return res.json({success: false, message: 'Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
+                        } else {
+                          user.permission = newPermission;
+                          user.save(function(err){
+                            if(err){
+                              return handleError(err);
+                            } else {
+                              return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the moderator range'})
+                            }
+                          })
+                        }
+                      } else {
+                        user.permission = newPermission;
+                        user.save(function(err){
+                          if(err){
+                            return handleError(err);
+                          } else {
+                            return res.json({success: true, message: 'You just downgrade '+user.username+' last moment'})
+                        }
+                      })
+                    }
+                  }
+
+                  if(newPermission === 'admin'){
+                    if(mainUser !== 'admin') {
+                      return res.json({success: false, message: 'Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
+                    }else {
+                      user.permission = newPermission;
+                      user.save(function(err){
+                        if(err){
+                          return handleError(err);
+                        } else {
+                          return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the user range'})
+                        }
+                      })
+                    }
+                }
+              }
+            })
+          }
+        }
+
+
+
+      })
+    })
 
     return router;
 };

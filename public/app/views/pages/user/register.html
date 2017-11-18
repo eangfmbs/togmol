@@ -7,7 +7,7 @@
             <p class="help-block" ng-show="(regForm.$submitted && regForm.username.$error.required)">Please fill your username. We need it :)</p>
             <p class="help-block" ng-show="(register.usernameMsg && !regForm.username.$error.required && regForm.username.$valid && register.checkingUsername)">{{register.usernameMsg}}</p>
             <ul class="help-block" ng-show="(regForm.$submitted && regForm.username.$error.minlength) || (regForm.$submitted && regForm.username.$error.maxlength) || (regForm.$submitted && regForm.username.$error.pattern)">
-              <li>your can only have max username length 35 characters</li>
+              <li>your can only have max username length 35 characters and no space between username</li>
               <li>username can contain only number or alphabet or both</li>
             </ul>
         </div>

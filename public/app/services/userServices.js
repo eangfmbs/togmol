@@ -48,6 +48,20 @@ angular.module('userServices',[])
     //User.getAllUsersForManagement()
     userFactory.getAllUsers4Management = function () {
         return $http.get('/api/management')
+    };
+    //User.getOneUserInDB(id)
+    userFactory.getOneUserInDB = function(id){
+      return $http.get('/api/editusername/'+id)
     }
+    //User.editManagement()
+    userFactory.editManagement = function(id){
+      return $http.put('/api/editmanagement', id)
+    }
+    //User.deleteUserInManagement(username)
+    userFactory.deleteUserInManagement = function(username){
+      return $http.delete('/api/management/'+username);
+    }
+
+
     return userFactory;
 });

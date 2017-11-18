@@ -62,6 +62,13 @@ var app = angular.module('appRoutes', ['ngRoute'])
             authenticated: true,
             permission: ['admin','moderator']
         })
+        .when('/editmag/:id', {
+          templateUrl: '/app/views/pages/management/editmag.html',
+          controller: 'editManagementCtrl',
+          controllerAs: 'edit',
+          authenticated: true,
+          permission: ['admin','moderator']
+        })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({
         enabled: true,
