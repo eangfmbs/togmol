@@ -533,27 +533,25 @@ module.exports = function (router) {
           }
         }
 
-
-
         //check if new permission is provided
         if(newPermission){
           if(mainUser.permission === 'admin' || mainUser.permission === 'moderator'){
-            findOne({_id: editUser}, function(err, user){
+            User.findOne({_id: editUser}, function(err, user){
                 if(err){
                   return handleError(err);
                 }
                 else{
                       if(newPermission === 'user'){
                         if(user.permission === 'admin'){
-                          if(mainUser !== 'admin'){
-                            return res.json({success: false, message: 'Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
+                          if(mainUser.permission !== 'admin'){
+                            return res.json({success: false, message: '1 Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
                           } else {
                             user.permission = newPermission;
                             user.save(function(err){
                               if(err){
                                 return handleError(err);
                               } else {
-                                return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the user range'})
+                                return res.json({success: true, message: '1 Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the user range'})
                               }
                             })
                           }
@@ -564,7 +562,7 @@ module.exports = function (router) {
                               console.log("Hello")
                               return handleError(err);
                             } else {
-                               res.json({success: true, message: 'You just downgrade '+user.username+' last moment'})
+                               res.json({success: true, message: '1 You just downgrade '+user.username+' to be a USER in this project'})
                           }
                         })
                       }
@@ -572,15 +570,15 @@ module.exports = function (router) {
 
                     if(newPermission === 'moderator'){
                       if(user.permission === 'admin'){
-                        if(mainUser !== 'admin'){
-                          return res.json({success: false, message: 'Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
+                        if(mainUser.permission !== 'admin'){
+                          return res.json({success: false, message: '2 Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
                         } else {
                           user.permission = newPermission;
                           user.save(function(err){
                             if(err){
                               return handleError(err);
                             } else {
-                              return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the moderator range'})
+                              return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the MODERATOR range'})
                             }
                           })
                         }
@@ -590,22 +588,23 @@ module.exports = function (router) {
                           if(err){
                             return handleError(err);
                           } else {
-                            return res.json({success: true, message: 'You just downgrade '+user.username+' last moment'})
+                            return res.json({success: true, message: '2 You just modify '+user.username+'  to be a MODERATOR in this project'})
                         }
                       })
                     }
                   }
 
                   if(newPermission === 'admin'){
-                    if(mainUser !== 'admin') {
-                      return res.json({success: false, message: 'Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
+                    console.log('mainUser here: ', mainUser.permission)
+                    if(mainUser.permission !== 'admin') {
+                      return res.json({success: false, message: '3 Your are not an admin so you just can not downgrade '+user.username+' who is an admin! at least you neet to be in the same range.'})
                     }else {
                       user.permission = newPermission;
                       user.save(function(err){
                         if(err){
                           return handleError(err);
                         } else {
-                          return res.json({success: true, message: 'Oh! You are the admin and you just downgrade '+user.username+' who was an admin last moment to the user range'})
+                          return res.json({success: true, message: 'Oh! You are the admin and you just modify '+user.username+' account to be an ADMIN'})
                         }
                       })
                     }
@@ -614,9 +613,6 @@ module.exports = function (router) {
             })
           }
         }
-
-
-
       })
     })
 

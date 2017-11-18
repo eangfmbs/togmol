@@ -71,6 +71,8 @@ angular.module('managementController', [])
     if(data.data.success){
       console.log('data: ', data)
       $scope.newUsername = data.data.user.username; //$scope.newUsername the newUsername is the ng-model in editmag file
+      $scope.newEmail = data.data.user.email;
+      $scope.newPermission = data.data.user.permission;
       $scope.currentUseID = data.data.user._id; //use in the edit management function
     } else {
       app.errorMsg = data.data.message;
@@ -78,6 +80,7 @@ angular.module('managementController', [])
   })
 
   app.usernamePhase = function(){
+    app.errorMsg = false;
     $scope.usernameTab = 'active';
     $scope.emailTab = 'default';
     $scope.permissionTab = 'default';
@@ -88,6 +91,7 @@ angular.module('managementController', [])
   }
 
   app.emailPhase = function(){
+    app.errorMsg = false;
     $scope.usernameTab = 'default';
     $scope.emailTab = 'active';
     $scope.permissionTab = 'default';
@@ -98,12 +102,25 @@ angular.module('managementController', [])
   }
 
   app.permissionPhase = function(){
+    app.errorMsg = false;
     $scope.usernameTab = 'default';
     $scope.emailTab = 'default';
     $scope.permissionTab = 'active';
     app.phase1 = false;
     app.phase2 = false;
     app.phase3 = true;
+    app.disableUser = false;
+    app.disableModerator = false;
+    app.disableAdmin = false;
+    if($scope.newPermission === 'user'){
+      app.disableUser = true;
+    }
+    if($scope.newPermission === 'moderator'){
+      app.disableModerator = true;
+    }
+    if($scope.newPermission === 'admin'){
+      app.disableAdmin = true;
+    }
 
   }
 
@@ -137,6 +154,71 @@ app.updateUsername = function(newUsername, valid){
     app.disable = false;
     app.errorMsg = "Please make sure your username is enter properly"
   }
+};
+
+app.updateEmail = function(newEmail, valid){
+  app.errorMsg = false;
+  app.disable = true;
+  var userObject = {};
+  if(valid){
+    userObject.email = $scope.newEmail;
+    userObject._id = $scope.currentUseID;
+    User.editManagement(userObject).then(function(data){
+      if(data.data.success){
+        app.successMsg = data.data.message;
+        $timeout(function(){
+          // app.usernameForm.username.$setPristine();
+          // app.usernameForm.username.$setUntouched();
+          // app.disable = false;
+          // app.successMsg = false;
+          // all above we can use;
+          $location.path('/management')
+        },10)
+      } else {
+        app.errorMsg = data.data.message;
+        app.disable = false;
+      }
+    })
+  } else{
+    app.disable = false;
+    app.errorMsg = "Please make sure your email is enter properly"
+  }
+}
+
+app.updatePermission = function(newPermission){
+  app.errorMsg = false;
+  app.disable = true;
+  app.successMsg = false;
+  var userObject = {};
+    userObject.permission = newPermission;
+    userObject._id = $scope.currentUseID;
+    console.log('here is userobject: ',userObject)
+    User.editManagement(userObject).then(function(data){
+      if(data.data.success){
+          if(newPermission === 'user'){
+            $scope.newPermission = 'user';
+            app.disableUser = true;
+            app.disableModerator = false;
+            app.disableAdmin = false;
+          }
+          if(newPermission === 'moderator'){
+            $scope.newPermission = 'moderator';
+            app.disableModerator = true;
+            app.disableUser = false;
+            app.disableAdmin = false;
+          }
+          if(newPermission === 'admin'){
+            $scope.newPermission = 'admin';
+            app.disableAdmin = true;
+            app.disableUser = false;
+            app.disableModerator = false;
+          }
+          app.successMsg = data.data.message;
+      } else {
+        app.errorMsg = data.data.message;
+        app.disable = false;
+      }
+    })
 }
 
 })
