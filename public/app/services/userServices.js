@@ -72,6 +72,10 @@ angular.module('userServices',[])
     userFactory.getAllStatus = function(){
       return $http.get('/api/status');
     }
+    //User.getProfileStatus()
+    userFactory.getProfileStatus = function(){
+      return $http.get('/api/profile');
+    }
 
 
     return userFactory;

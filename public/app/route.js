@@ -25,7 +25,9 @@ var app = angular.module('appRoutes', ['ngRoute'])
             templateUrl: '/app/views/pages/about.html'
         })
         .when('/profile', {
-            templateUrl: '/app/views/pages/user/profile.html',
+            templateUrl: '/app/views/pages/profile.html',
+            controller: 'profileCtrl',
+            controllerAs: 'profile',
             authenticated: true
         })
         .when('/activate/:token', {

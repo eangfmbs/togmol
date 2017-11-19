@@ -643,7 +643,23 @@ module.exports = function (router) {
         if(err){
           return handleError(err);
         }
+        if(!status){
+          return res.json({success: false, message: "Your token is expired please login again to see!"})
+        }
         return res.json({success: true, status: status})
+      })
+    })
+
+    //get Status for owner profile user
+    router.get('/profile', function(req, res){
+      Status.find({username: req.decoded.username}, function(err, profile){
+        if(err){
+          return handleError(err);
+        }
+        if(!profile){
+          return res.json({success: false, message: "Your token is expired please login again to see it!"})
+        }
+        return res.json({success: true, profile: profile})
       })
     })
 

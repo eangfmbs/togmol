@@ -22,6 +22,19 @@ angular.module('statusController',['userServices'])
   User.getAllStatus().then(function(data){
     if(data.data.success){
       app.allStatus = data.data.status;
+    } else {
+      app.errorMsg = data.data.message;
+    }
+  })
+})
+
+.controller('profileCtrl', function(User, $timeout, $location){
+  var app = this;
+  User.getProfileStatus().then(function(data){
+    if(data.data.success){
+      app.allStatus = data.data.profile;
+    } else {
+      app.errorMsg = data.data.message;
     }
   })
 })
