@@ -663,5 +663,19 @@ module.exports = function (router) {
       })
     })
 
+    //Detail on one status for user discussion
+    router.get('/talk/:id', function(req, res){
+      var talkID = req.params.id;
+      Status.findOne({_id: talkID}, function(err, talk){
+        if(err){
+          handleError(err);
+        }
+        if(talkID === null){
+          return res.json({success: false, message: 'Oops! This topic has been deleted'})
+        }
+        return res.json({success: true, talk: talk})
+      })
+    })
+
     return router;
 };

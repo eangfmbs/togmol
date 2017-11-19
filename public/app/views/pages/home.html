@@ -2,7 +2,7 @@
   <div>Hello. This is Home of {{main.username}}</div>
   <div class="panel-group" ng-repeat = "status in home.allStatus">
       <div class="panel panel-default">
-        <div class="panel-heading">{{status.title}}</div>
+        <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.title}}</a></div>
         <div class="panel-body">{{status.content}}</div>
       </div>
   </div>

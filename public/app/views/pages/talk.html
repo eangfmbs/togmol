@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading">{{talk.status.title}}</div>
+    <div class="panel-body">
+      {{talk.status.content}}
+    </div>
+  </div>
+  <div class="row show-hide-message" ng-show="talk.errorMsg">
+      <div class="alert alert-danger">
+          {{talk.errorMsg}}
+      </div>
+  </div>
+</div>

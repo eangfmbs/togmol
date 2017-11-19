@@ -38,6 +38,7 @@ var userSchema = new Schema({
     username: {type: String, lowercase: true, required: true, unique: true, validate: usernameValidator},
     email: {type: String, lowercase: true, required: true, unique: true, validate: emailValidator},
     password: {type: String, required: true, validate: passwordValidator, select: false},
+    profile: {type: String, required: true, default: 'dummyprofile.jpg'},
     activate: {type: Boolean, required: true, default: false},
     temporarytoken: {type: String, required: true},
     resettoken: {type: String, required: false},

@@ -78,6 +78,11 @@ var app = angular.module('appRoutes', ['ngRoute'])
           controller: 'askCtrl',
           controllerAs: 'ask'
         })
+        .when('/talk/:id', {
+          templateUrl: '/app/views/pages/talk.html',
+          controller: 'talkCtrl',
+          controllerAs: 'talk'
+        })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({
         enabled: true,
