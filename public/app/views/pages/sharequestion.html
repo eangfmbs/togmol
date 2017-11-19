@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>Form control: textarea</h2>
+  <form ng-submit="ask.askQuestion(askData)" novalidate>
+    <div class="form-group">
+      <label for="usr">Title:</label>
+      <input type="text" class="form-control" name="title" ng-model="ask.askData.title">
+    </div>
+    <div class="form-group">
+      <label for="comment">Content:</label>
+      <textarea class="form-control" rows="5" name="content" ng-model="ask.askData.content"></textarea>
+    </div>
+    <br><button  class="btn btn-primary" type="submit">Post</button>
+
+  </form>
+  <div class="row show-hide-message" ng-show="ask.successMsg">
+      <div class="alert alert-success">
+          {{ask.successMsg}}
+      </div>
+  </div>
+  <div class="row show-hide-message" ng-show="ask.errorMsg">
+      <div class="alert alert-danger">
+          {{ask.errorMsg}}
+      </div>
+  </div>
+</div>

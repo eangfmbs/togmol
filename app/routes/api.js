@@ -1,4 +1,5 @@
 var User        = require('../models/user');
+var Status      = require('../models/status')
 var jwt         = require('jsonwebtoken');
 var nodemailer  = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
@@ -613,6 +614,36 @@ module.exports = function (router) {
             })
           }
         }
+      })
+    })
+
+    //create Status table
+    router.post('/status', function (req, res) {
+        var status = new Status();
+        console.log("Hello id", req.decoded)
+        status.title = req.body.title;
+        status.content = req.body.content;
+        status.username = req.decoded.username;
+        if(status.title=='' || status.title==null){
+            res.json({success:false, message:'Please make sure title box is filled'})
+        } else {
+            status.save(function (err) {
+                if(err){
+                    console.log(err);
+                } else {
+                    res.json({success:true, message:'You post a status!'})
+                }
+            });
+        }
+    });
+
+    //get data from status collection to show on index.html
+    router.get('/status', function(req, res){
+      Status.find({}, function(err, status){
+        if(err){
+          return handleError(err);
+        }
+        return res.json({success: true, status: status})
       })
     })
 

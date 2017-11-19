@@ -2,7 +2,9 @@ var app = angular.module('appRoutes', ['ngRoute'])
 .config(function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {
-            templateUrl: '/app/views/pages/home.html'
+            templateUrl: '/app/views/pages/home.html',
+            controller: 'homeCtrl',
+            controllerAs: 'home'
         })
 
         .when('/register', {
@@ -68,6 +70,11 @@ var app = angular.module('appRoutes', ['ngRoute'])
           controllerAs: 'edit',
           authenticated: true,
           permission: ['admin','moderator']
+        })
+        .when('/sharequestion',{
+          templateUrl: '/app/views/pages/sharequestion.html',
+          controller: 'askCtrl',
+          controllerAs: 'ask'
         })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({

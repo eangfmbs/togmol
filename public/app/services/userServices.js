@@ -63,5 +63,16 @@ angular.module('userServices',[])
     }
 
 
+    //From this route is the route for status when user post a content
+    //User.postStatus(askData)
+    userFactory.postStatus = function(askData){
+      return $http.post('/api/status', askData)
+    }
+    //User.getAllStatus()
+    userFactory.getAllStatus = function(){
+      return $http.get('/api/status');
+    }
+
+
     return userFactory;
 });

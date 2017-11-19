@@ -65,6 +65,17 @@ userSchema.methods.comparePassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 
+//Post Status table
+// var statusSchema = new Schema({
+//   statustitle: {type: String, required: true},
+//   statuscontent: {type: String, required: false},
+//   totallike: {type: String, required: false, default: '0'},
+//   statusview: {type: String, required: false, default: '0'},
+//   totalcomment: {type: String, required: false, default: '0'},
+//   date: {type: Date, required: true, default: Date.now},
+//   userid: {type: String, required: true}
+// })
+
 // Login with facebook
 //     FacebookStrategy = require('passport-facebook').Strategy;
 //
@@ -82,3 +93,4 @@ userSchema.methods.comparePassword = function (password) {
 // ));
 
 module.exports = mongoose.model('User', userSchema);
+// module.exports = mongoose.model('Status', statusSchema);

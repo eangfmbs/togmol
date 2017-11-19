@@ -43,7 +43,6 @@ angular.module('mainControllers', ['authServices'])
         // if(!appMsg.checkingSession){
         //     appMsg.checkSession(); //call to check for this when user change the route
         // }
-
         //check if the user have been login
         if(Auth.isLoggedIn()){
             appMsg.isLoggedIn = true; //use to hide login tab when we are in login
@@ -104,6 +103,12 @@ angular.module('mainControllers', ['authServices'])
         $location.path('/logout');
         $timeout(function () {
             $location.path('/');
-        },10)
+        },1)
     }
+
+  //  pull all status to show on index.html
+
+
+
+
 });
