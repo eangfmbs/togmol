@@ -54,7 +54,6 @@ angular.module('statusController',['userServices'])
 
   app.postComment = function(commentData){
     var objectComment = $routeParams.id;
-    //objectComment = app.commentData;
     console.log('this comment Data: ', app.commentData)
     User.postComment(objectComment, app.commentData).then(function(data){
       if(data.data.success){
@@ -75,7 +74,7 @@ angular.module('statusController',['userServices'])
   }
   loadComment();
 })
-.controller('updateTalkCtrl', function(User,$scope,$routeParams){
+.controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){
   var app = this;
   User.getData2UpdateStatusTalk($routeParams.id).then(function(data){
     if(data.data.success){
@@ -88,10 +87,18 @@ angular.module('statusController',['userServices'])
 
   app.updateTalk = function(talkTitle, talkContent){
     var objectUpdate4Talk = {};
-    objectUpdate4Talk = talkTitle;
-    objectUpdate4Talk = talkContent;
-    //need id toooo
-    console.log("Test for update talk variable send: ", objectUpdate4Talk);
+    objectUpdate4Talk.title = talkTitle;
+    objectUpdate4Talk.content = talkContent;
+    objectUpdate4Talk._id = $routeParams.id;
+    User.updateNewStatusTalk(objectUpdate4Talk).then(function(data){
+      if(data.data.success){
+        $timeout(function(){
+          $location.path('/talk/'+$routeParams.id);
+        },0)
+      } else {
+        app.errorMsg = data.data.message;
+      }
+    })
   }
 
 })

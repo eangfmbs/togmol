@@ -94,6 +94,10 @@ angular.module('userServices',[])
     userFactory.getData2UpdateStatusTalk = function(id){
       return $http.get('/api/updatetalk/'+id);
     };
+    //User.updateNewStatus(updateStatusData)
+    userFactory.updateNewStatusTalk = function(updateData){
+      return $http.put('/api/updatetalk', updateData);
+    };
 
     return userFactory;
 });

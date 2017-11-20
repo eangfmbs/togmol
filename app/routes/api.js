@@ -483,8 +483,6 @@ module.exports = function (router) {
     //route reponsible for update/edit all data in Mangaement such as username, email, permission
     router.put('/editmanagement', function(req, res){
       var editUser = req.body._id;
-      console.log("The id is: ", editUser)
-
       if(req.body.username) var newUsername = req.body.username; //if username is provided and so on for other ifs
       if(req.body.email) var newEmail = req.body.email;
       if(req.body.permission) var newPermission = req.body.permission;
@@ -726,6 +724,35 @@ module.exports = function (router) {
         }
       })
     })
+
+    //route to update talk status
+    router.put('/updatetalk', function(req, res){
+      var talkID = req.body._id;
+      Status.findOne({_id: talkID}, function(err, status){
+        if(err){
+          return handleError(err);
+        } else {
+          if(req.decoded.username === status.username){
+            if(req.body.title !== undefined || req.body.title !== '' || req.body.title !== null){
+              status.title = req.body.title;
+              status.content = req.body.content;
+              status.save(function(err){
+                if(err){
+                  return handleError(err);
+                } else {
+                  return res.json({success: true, message: 'Your new status is updated!'})
+                }
+              })
+            } else {
+              return res.json({success: false, message: 'Title of the content need to be filled'})
+            }
+          } else {
+            return res.json({success: false, message: 'You are not authorized to be update this talk'})
+          }
+        }
+      })
+    })
+
 
     return router;
 };
