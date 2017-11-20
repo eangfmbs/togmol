@@ -89,7 +89,11 @@ angular.module('userServices',[])
     //User.getAllCommentforThatStatusInTalkPage(id)
     userFactory.getAllCommetInCurrentStatus = function(id){
       return $http.get('/api/comment/'+id);
-    }
+    };
+    //User.getData2UpdateStatusTalk(id)
+    userFactory.getData2UpdateStatusTalk = function(id){
+      return $http.get('/api/updatetalk/'+id);
+    };
 
     return userFactory;
 });

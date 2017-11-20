@@ -69,7 +69,6 @@ angular.module('managementController', [])
 
   User.getOneUserInDB($routeParams.id).then(function(data){
     if(data.data.success){
-      console.log('data: ', data)
       $scope.newUsername = data.data.user.username; //$scope.newUsername the newUsername is the ng-model in editmag file
       $scope.newEmail = data.data.user.email;
       $scope.newPermission = data.data.user.permission;

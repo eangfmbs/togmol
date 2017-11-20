@@ -43,8 +43,10 @@ angular.module('statusController',['userServices'])
   app.errorMsg = false
   User.getDiscussion($routeParams.id).then(function(data){
     if(data.data.success){
+      app.enabledEdit = data.data.enabledEdit;
       app.status = data.data.talk;
     } else {
+      app.enabledEdit = data.data.enabledEdit;
       app.errorMsg = true;
       app.errorMsg = data.data.message;
     }
@@ -66,11 +68,30 @@ angular.module('statusController',['userServices'])
   function loadComment(){
     User.getAllCommetInCurrentStatus($routeParams.id).then(function(data){
       if(data.data.success){
+        console.log("Load all the time! fuck!!!")
         app.allComments = data.data.comments;
       }
     })
   }
-
   loadComment();
+})
+.controller('updateTalkCtrl', function(User,$scope,$routeParams){
+  var app = this;
+  User.getData2UpdateStatusTalk($routeParams.id).then(function(data){
+    if(data.data.success){
+      $scope.talkTitle = data.data.talk.title;
+      $scope.talkContent = data.data.talk.content;
+    } else {
+      app.errorMsg = data.data.message;
+    }
+  })
+
+  app.updateTalk = function(talkTitle, talkContent){
+    var objectUpdate4Talk = {};
+    objectUpdate4Talk = talkTitle;
+    objectUpdate4Talk = talkContent;
+    //need id toooo
+    console.log("Test for update talk variable send: ", objectUpdate4Talk);
+  }
 
 })

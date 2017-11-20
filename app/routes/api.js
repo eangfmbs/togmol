@@ -28,7 +28,7 @@ module.exports = function (router) {
         user.password = req.body.password;
         user.email    = req.body.email;
         user.temporarytoken = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
-        if(user.username=='' ||user.password=='' ||user.email=='' || user.username==null ||user.password==null ||user.email==null){
+        if(user.username=='' ||user.password=='' ||user.email=='' || user.username==undefined ||user.password==undefined ||user.email==undefined){
             res.json({success:false, message:'Please make sure all box is filled'})
         } else {
             user.save(function (err) {
@@ -357,7 +357,7 @@ module.exports = function (router) {
             if(err){
                 handleError(err);
             }
-            if(req.body.password!=null || req.body.password != ''){
+            if(req.body.password!=undefined || req.body.password != ''){
                 user.password = req.body.password;
                 user.resettoken = false;
                 user.save(function (err) {
@@ -625,7 +625,7 @@ module.exports = function (router) {
         status.title = req.body.title;
         status.content = req.body.content;
         status.username = req.decoded.username;
-        if(status.title=='' || status.title==null){
+        if(status.title=='' || status.title==undefined){
             res.json({success:false, message:'Please make sure title box is filled'})
         } else {
             status.save(function (err) {
@@ -664,17 +664,19 @@ module.exports = function (router) {
       })
     })
 
-    //Show detail on one status for user discussion
+    //Show detail on one status for user discussion in talk.html
     router.get('/talk/:id', function(req, res){
       var talkID = req.params.id;
       Status.findOne({_id: talkID}, function(err, talk){
         if(err){
           handleError(err);
-        }
-        if(talkID === null){
-          return res.json({success: false, message: 'Oops! This topic has been deleted'})
-        }
-        return res.json({success: true, talk: talk})
+        } else {
+            if (talk.username === req.decoded.username){
+              res.json({success: true, talk: talk, enabledEdit: true})
+            } else {
+              res.json({success: true, talk: talk, enabledEdit: false})
+            }
+          }
       })
     })
 
@@ -685,16 +687,16 @@ module.exports = function (router) {
       comment.username = req.decoded.username;
       comment.comment  = req.body.comment;
       console.log('comment.comment', comment.comment)
-      if(comment.comment === null || comment.comment === ''){
+      if(comment.comment === undefined || comment.comment === ''){
         return res.json({success: false, message: 'Fill needed in the comment box'});
+      } else {
+        comment.save(function(err){
+          if(err){
+            return handleError(err);
+          }
+          return res.json({success: true, message: 'You post a comment!'});
+        })
       }
-      comment.save(function(err){
-        if(err){
-          return handleError(err);
-        }
-        return res.json({success: true, message: 'You post a comment!'});
-      })
-
     })
 
     //route to get data of the comment on talk page back after comment and show it instantly
@@ -703,8 +705,25 @@ module.exports = function (router) {
       Comment.find({statusid: idOfStatus}, function(err, comments){ //statusid is the id of the status in comment document
         if(err){
           return handleError(err);
+        } else {
+          return res.json({success: true, comments: comments});
         }
-        return res.json({success: true, comments: comments});
+      })
+    })
+
+    //route to get data for update talk
+    router.get('/updatetalk/:id', function(req, res){
+      var talkID = req.params.id;
+      Status.findOne({_id: talkID}, function(err, talk){
+        if(err){
+          return handleError(err);
+        } else {
+              if(talk.username === req.decoded.username){
+                return res.json({success: true, talk: talk});
+              } else {
+                return res.json({success: false, message: "You are not the owner of this talk content!"})
+              }
+        }
       })
     })
 

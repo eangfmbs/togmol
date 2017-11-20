@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>Form control: textarea</h2>
+  <form ng-submit="update.updateTalk(talkTitle, talkContent)" novalidate>
+    <div class="form-group">
+      <label>Title:</label>
+      <input type="text" class="form-control" name="title" ng-model="talkTitle">
+    </div>
+    <div class="form-group">
+      <label>Content:</label>
+      <textarea class="form-control" rows="5" name="content" ng-model="talkContent"></textarea>
+    </div>
+    <br><button  class="btn btn-primary" type="submit">Update</button>
+  </form>
+
+  <div class="row show-hide-message" ng-show="update.successMsg">
+      <div class="alert alert-success">
+          {{update.successMsg}}
+      </div>
+  </div>
+  <div class="row show-hide-message" ng-show="update.errorMsg">
+      <div class="alert alert-danger">
+          {{update.errorMsg}}
+      </div>
+  </div>
+</div>

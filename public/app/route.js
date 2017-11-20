@@ -21,9 +21,6 @@ var app = angular.module('appRoutes', ['ngRoute'])
             templateUrl: '/app/views/pages/user/logout.html',
             authenticated: true
         })
-        .when('/about', {
-            templateUrl: '/app/views/pages/about.html'
-        })
         .when('/profile', {
             templateUrl: '/app/views/pages/profile.html',
             controller: 'profileCtrl',
@@ -76,12 +73,20 @@ var app = angular.module('appRoutes', ['ngRoute'])
         .when('/sharequestion',{
           templateUrl: '/app/views/pages/sharequestion.html',
           controller: 'askCtrl',
-          controllerAs: 'ask'
+          controllerAs: 'ask',
+          authenticated: true
         })
         .when('/talk/:id', {
           templateUrl: '/app/views/pages/talk.html',
           controller: 'talkCtrl',
-          controllerAs: 'talk'
+          controllerAs: 'talk',
+          authenticated: true
+        })
+        .when('/updatetalk/:id', {
+            templateUrl: '/app/views/pages/updatetalk.html',
+            controller: 'updateTalkCtrl',
+            controllerAs: 'update',
+            authenticated: true
         })
         .otherwise({redirectTo: '/'});
     $locationProvider.html5Mode({
