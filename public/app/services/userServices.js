@@ -98,6 +98,10 @@ angular.module('userServices',[])
     userFactory.updateNewStatusTalk = function(updateData){
       return $http.put('/api/updatetalk', updateData);
     };
+    //User.deleteTalkStatus(id)
+    userFactory.deleteTalkStatus = function(id){
+      return $http.delete('/api/deletetalk/'+id);
+    }
 
     return userFactory;
 });

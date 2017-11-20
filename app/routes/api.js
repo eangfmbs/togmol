@@ -753,6 +753,29 @@ module.exports = function (router) {
       })
     })
 
+    //Delete talk status
+    router.delete('/deletetalk/:id', function(req, res){
+      var deleteTalkID = req.params.id;
+      var tokenUsername = req.decoded.username;
+      Status.findOne({username: tokenUsername}, function(err, user){
+        if(err){
+          return handleError(err);
+        } else {
+              if(user.username === tokenUsername){
+                Status.findOneAndRemove({_id: deleteTalkID}, function(err, status){
+                  if(err){
+                    return handleError(err);
+                  } else {
+                    return res.json({success: true, message: 'Status has been delete'})
+                  }
+                })
+              }
+              else return res.json({success: false, message: 'You are not the owner of this status'})
+        }
+      })
+
+    })
+
 
     return router;
 };

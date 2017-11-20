@@ -73,6 +73,19 @@ angular.module('statusController',['userServices'])
     })
   }
   loadComment();
+
+    app.deleteTalk = function(){
+      User.deleteTalkStatus($routeParams.id).then(function(data){
+        if(data.data.success){
+          $timeout(function () {
+            $location.path('/profile')
+          }, 0);
+        } else {
+          app.errorMsg = data.data.message;
+        }
+      })
+    }
+
 })
 .controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){
   var app = this;
@@ -100,5 +113,6 @@ angular.module('statusController',['userServices'])
       }
     })
   }
+
 
 })
