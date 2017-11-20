@@ -81,5 +81,15 @@ angular.module('userServices',[])
       return $http.get('/api/talk/'+id);
     };
 
+    //This part is about all comment section
+    //User.postComment(id)
+    userFactory.postComment = function(id, commentData){
+      return $http.post('/api/comment/'+id, commentData);
+    };
+    //User.getAllCommentforThatStatusInTalkPage(id)
+    userFactory.getAllCommetInCurrentStatus = function(id){
+      return $http.get('/api/comment/'+id);
+    }
+
     return userFactory;
 });

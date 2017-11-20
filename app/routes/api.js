@@ -1,5 +1,6 @@
 var User        = require('../models/user');
-var Status      = require('../models/status')
+var Status      = require('../models/status');
+var Comment     = require('../models/comment');
 var jwt         = require('jsonwebtoken');
 var nodemailer  = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
@@ -663,7 +664,7 @@ module.exports = function (router) {
       })
     })
 
-    //Detail on one status for user discussion
+    //Show detail on one status for user discussion
     router.get('/talk/:id', function(req, res){
       var talkID = req.params.id;
       Status.findOne({_id: talkID}, function(err, talk){
@@ -674,6 +675,36 @@ module.exports = function (router) {
           return res.json({success: false, message: 'Oops! This topic has been deleted'})
         }
         return res.json({success: true, talk: talk})
+      })
+    })
+
+    //Post a comment by user in the talk page
+    router.post('/comment/:id', function(req, res){
+      var comment = new Comment();
+      comment.statusid = req.params.id;
+      comment.username = req.decoded.username;
+      comment.comment  = req.body.comment;
+      console.log('comment.comment', comment.comment)
+      if(comment.comment === null || comment.comment === ''){
+        return res.json({success: false, message: 'Fill needed in the comment box'});
+      }
+      comment.save(function(err){
+        if(err){
+          return handleError(err);
+        }
+        return res.json({success: true, message: 'You post a comment!'});
+      })
+
+    })
+
+    //route to get data of the comment on talk page back after comment and show it instantly
+    router.get('/comment/:id', function(req, res){
+      var idOfStatus = req.params.id;
+      Comment.find({statusid: idOfStatus}, function(err, comments){ //statusid is the id of the status in comment document
+        if(err){
+          return handleError(err);
+        }
+        return res.json({success: true, comments: comments});
       })
     })
 

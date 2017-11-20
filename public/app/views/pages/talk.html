@@ -1,13 +1,37 @@
 <div class="container">
   <div class="panel panel-info">
-    <div class="panel-heading">{{talk.status.title}}</div>
+    <div class="panel-heading">{{talk.status.username}} {{talk.status.title}}</div>
     <div class="panel-body">
       {{talk.status.content}}
     </div>
   </div>
+
+
+  <form class="form-inline" ng-submit = "talk.postComment(commentData)" novalidate>
+     <div class="form-group">
+       <label>Comment</label>
+       <input type="text" name="comment" class="form-control" ng-model = talk.commentData.comment >
+     </div>
+     <button type="submit" class="btn btn-default">Comment</button>
+  </form>
+
+  <div class="row show-hide-message" ng-show="talk.successMsg">
+      <div class="alert alert-success">
+          {{talk.successMsg}}
+      </div>
+  </div>
+
   <div class="row show-hide-message" ng-show="talk.errorMsg">
       <div class="alert alert-danger">
           {{talk.errorMsg}}
+      </div>
+  </div>
+
+  <div><h2>This is the comment of this status</h2></div>
+  <div class="panel-group" ng-repeat = "comment in talk.allComments">
+      <div class="panel panel-default">
+        <div class="panel-heading">{{comment.username}}</div>
+        <div class="panel-body">{{comment.comment}}</div>
       </div>
   </div>
 </div>

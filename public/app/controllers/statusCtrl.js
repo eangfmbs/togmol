@@ -48,5 +48,29 @@ angular.module('statusController',['userServices'])
       app.errorMsg = true;
       app.errorMsg = data.data.message;
     }
-  })
+  });
+
+  app.postComment = function(commentData){
+    var objectComment = $routeParams.id;
+    //objectComment = app.commentData;
+    console.log('this comment Data: ', app.commentData)
+    User.postComment(objectComment, app.commentData).then(function(data){
+      if(data.data.success){
+        loadComment();
+      } else {
+        app.errorMsg = data.data.message;
+      }
+    })
+  }
+
+  function loadComment(){
+    User.getAllCommetInCurrentStatus($routeParams.id).then(function(data){
+      if(data.data.success){
+        app.allComments = data.data.comments;
+      }
+    })
+  }
+
+  loadComment();
+
 })
