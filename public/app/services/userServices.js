@@ -102,6 +102,10 @@ angular.module('userServices',[])
     userFactory.deleteTalkStatus = function(id){
       return $http.delete('/api/deletetalk/'+id);
     }
+    //User.likeTalk(id)
+    userFactory.likeTalk = function(id){
+      return $http.post('/api/peopleliketalkcontent/'+id);
+    }
 
     return userFactory;
 });

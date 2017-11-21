@@ -54,9 +54,9 @@ angular.module('statusController',['userServices'])
 
   app.postComment = function(commentData){
     var objectComment = $routeParams.id;
-    console.log('this comment Data: ', app.commentData)
     User.postComment(objectComment, app.commentData).then(function(data){
       if(data.data.success){
+        console.log('this comment Data: ', data.data)
         loadComment();
       } else {
         app.errorMsg = data.data.message;
@@ -74,6 +74,17 @@ angular.module('statusController',['userServices'])
   }
   loadComment();
 
+//like talk topic
+    app.likeTalk = function(){
+      User.likeTalk($routeParams.id).then(function(data){
+        if(data.data.success){
+          console.log(data.data.message)
+        } else {
+          console.log(data.data.message)
+        }
+      })
+    }
+//for delete topic of talk
     app.deleteTalk = function(){
       User.deleteTalkStatus($routeParams.id).then(function(data){
         if(data.data.success){

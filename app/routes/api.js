@@ -1,10 +1,13 @@
 var User        = require('../models/user');
 var Status      = require('../models/status');
 var Comment     = require('../models/comment');
+var Like        = require('../models/like');
 var jwt         = require('jsonwebtoken');
 var nodemailer  = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
 var secret      = 'intelligent'; //whatever it just a secret
+var countComment= 0;
+var currentTotal= 0;
 
 //create new user route (http://localhost:8080/api/users)
 module.exports = function (router) {
@@ -619,7 +622,6 @@ module.exports = function (router) {
     //create Status table
     router.post('/status', function (req, res) {
         var status = new Status();
-        console.log("Hello id", req.decoded)
         status.title = req.body.title;
         status.content = req.body.content;
         status.username = req.decoded.username;
@@ -681,6 +683,7 @@ module.exports = function (router) {
     //Post a comment by user in the talk page
     router.post('/comment/:id', function(req, res){
       var comment = new Comment();
+      var status = new Status();
       comment.statusid = req.params.id;
       comment.username = req.decoded.username;
       comment.comment  = req.body.comment;
@@ -688,11 +691,27 @@ module.exports = function (router) {
       if(comment.comment === undefined || comment.comment === ''){
         return res.json({success: false, message: 'Fill needed in the comment box'});
       } else {
+        Status.findOne({_id: req.params.id}, function(err, status){
+          if(err) throw err;
+          else {
+            currentTotal = status.totalcomment;
+            countComment= currentTotal+1;
+            console.log("currentTotal comment should: ", currentTotal)
+            console.log("countComment should increase: ", countComment)
+            Status.findOneAndUpdate({totalcomment: currentTotal}, {totalcomment:countComment}, {new:true}, function(err, count){
+              if(err) throw err;
+              // else {
+              //   console.log("what is count object: ", count)
+              //   console.log("what is total comment now: ", count.totalcomment);
+              // }
+            })
+          }
+        })
         comment.save(function(err){
           if(err){
             return handleError(err);
           }
-          return res.json({success: true, message: 'You post a comment!'});
+          return res.json({success: true, message: 'You post a comment!', numberOfComment: countComment});
         })
       }
     })
@@ -774,6 +793,20 @@ module.exports = function (router) {
         }
       })
 
+    })
+
+    //Like talk content and save that user to like document
+    router.post('/peopleliketalkcontent/:id', function(req, res){
+      var like = new Like();
+       like.statusid = req.params.id;
+       like.username = req.decoded.username;
+             like.save(function(err){
+               if(err){
+                 return res.json({sucess: false, message: 'You are already like this talk'})
+               } else {
+                 return res.json({success: true, message:'You like this talk'})
+               }
+             })
     })
 
 

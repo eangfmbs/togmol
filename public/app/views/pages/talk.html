@@ -8,6 +8,9 @@
     <div>
       <button ng-show="talk.enabledEdit" type="button" class="btn btn-danger" ng-click="talk.deleteTalk()">Delete?</button>
     </div>
+    <div>
+      <button  type="button" class="btn btn-success" ng-click="talk.likeTalk()">Like?</button>
+    </div>
 
     <div class="panel-body">
       {{talk.status.content}}

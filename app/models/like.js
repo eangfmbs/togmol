@@ -4,7 +4,7 @@ var Schema      = mongoose.Schema;
 
 var likeSchema = new Schema({
   date: {type: Date, required: true, default: Date.now},
-  username: {type: String, required: true},
+  username: {type: String, required: true, unique: true},
   statusid: {type: String, required: true}
 })
 
