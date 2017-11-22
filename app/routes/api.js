@@ -8,6 +8,8 @@ var sgTransport = require('nodemailer-sendgrid-transport');
 var secret      = 'intelligent'; //whatever it just a secret
 var countComment= 0;
 var currentTotal= 0;
+var countLike = 0;
+var currentLike = 0;
 
 //create new user route (http://localhost:8080/api/users)
 module.exports = function (router) {
@@ -683,7 +685,7 @@ module.exports = function (router) {
     //Post a comment by user in the talk page
     router.post('/comment/:id', function(req, res){
       var comment = new Comment();
-      var status = new Status();
+      // var status = new Status();
       comment.statusid = req.params.id;
       comment.username = req.decoded.username;
       comment.comment  = req.body.comment;
@@ -698,7 +700,7 @@ module.exports = function (router) {
             countComment= currentTotal+1;
             console.log("currentTotal comment should: ", currentTotal)
             console.log("countComment should increase: ", countComment)
-            Status.findOneAndUpdate({totalcomment: currentTotal}, {totalcomment:countComment}, {new:true}, function(err, count){
+            Status.findOneAndUpdate({_id: req.params.id}, {totalcomment:countComment}, {new:true}, function(err, count){
               if(err) throw err;
               // else {
               //   console.log("what is count object: ", count)
@@ -798,17 +800,32 @@ module.exports = function (router) {
     //Like talk content and save that user to like document
     router.post('/peopleliketalkcontent/:id', function(req, res){
       var like = new Like();
+      // var status = new Status();
        like.statusid = req.params.id;
        like.username = req.decoded.username;
-             like.save(function(err){
-               if(err){
-                 return res.json({sucess: false, message: 'You are already like this talk'})
-               } else {
-                 return res.json({success: true, message:'You like this talk'})
-               }
-             })
-    })
-
+       Status.findOne({_id: req.params.id}, function(err, status){
+         if(err){
+           return handleError(err);
+         } else {
+           currentLike = status.totallike;
+           countLike = currentLike+1;
+           Status.findOneAndUpdate({_id: req.params.id}, {totallike: countLike}, {new: true}, function(err, like){
+             if(err){
+               return handleError(err);
+             } else {
+               console.log("success update!")
+             }
+           })
+         }
+       })
+         like.save(function(err){
+         if(err){
+         return res.json({success: false, message: 'You are already like this talk'})
+         } else {
+       return res.json({success: true, message:'You like this talk'})
+     }
+   })
+})
 
     return router;
 };
