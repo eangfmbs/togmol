@@ -53,6 +53,7 @@ angular.module('statusController',['userServices'])
     if(data.data.success){
       app.enabledEdit = data.data.enabledEdit;
       app.status = data.data.talk;
+      console.log('this talk view is: ', data.data.views)
       app.totallike = data.data.like;
         User.checkLike($routeParams.id).then(function(data){//check fo get initial value of like or unlike
           if(!data.data.isLike){
@@ -63,8 +64,6 @@ angular.module('statusController',['userServices'])
             app.likeSymbol = data.data.symbol;
           }
         })
-
-
     } else {
       app.enabledEdit = data.data.enabledEdit;
       app.errorMsg = true;

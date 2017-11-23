@@ -10,6 +10,8 @@ var countComment= 0;
 var currentTotal= 0;
 var countLike = 0;
 var currentLike = 0;
+var countView = 0;
+var currentView = 0;
 
 //create new user route (http://localhost:8080/api/users)
 module.exports = function (router) {
@@ -676,7 +678,17 @@ module.exports = function (router) {
             if (talk.username === req.decoded.username){
               res.json({success: true, talk: talk, like: talk.totallike, enabledEdit: true})
             } else {
-              res.json({success: true, talk: talk, like: talk.totallike, enabledEdit: false})
+              currentView = talk.statusview;
+              countView = currentView+1;
+
+              Status.findOneAndUpdate({_id:talkID}, {statusview:countView}, {new:true}, function(err, updateView){
+                if(err){
+                  throw err;
+                } else {
+                  countView: updateView.statusview;
+                }
+              })
+              res.json({success: true, talk: talk, like: talk.totallike, enabledEdit: false, views: countView})
             }
           }
       })
