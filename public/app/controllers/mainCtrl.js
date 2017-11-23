@@ -1,12 +1,12 @@
 angular.module('mainControllers', ['authServices'])
 .controller('mainCtrl', function (Auth,$timeout,$location,$rootScope,$interval,$window,User) {
-    var appMsg = this;
-    appMsg.loadingContent = false; //don't show html part of angular until it finish loading data
+    var app = this;
+    app.loadingContent = false; //don't show html part of angular until it finish loading data
     //this will help preventing user to see any content that surrounding data of angular syntax like {{..}}
 
-    // appMsg.checkSession = function () {
+    // app.checkSession = function () {
     //     if(Auth.isLoggedIn()){
-    //         appMsg.checkingSession = true;
+    //         app.checkingSession = true;
     //         var interval = $interval(function () {
     //             var token = $window.localStorage.getItem('token');
     //                 if(token === null){
@@ -35,65 +35,65 @@ angular.module('mainControllers', ['authServices'])
     //     }
     // };
     //
-    // appMsg.checkSession(); // call for check token/session when user refresh.
+    // app.checkSession(); // call for check token/session when user refresh.
 
     // so this $routeProvider will check with any variable when user request to a new route to make sure
     //the data will be refresh from the same status;
     $rootScope.$on('$routeChangeStart', function () {
-        // if(!appMsg.checkingSession){
-        //     appMsg.checkSession(); //call to check for this when user change the route
+        // if(!app.checkingSession){
+        //     app.checkSession(); //call to check for this when user change the route
         // }
         //check if the user have been login
         if(Auth.isLoggedIn()){
-            appMsg.isLoggedIn = true; //use to hide login tab when we are in login
+            app.isLoggedIn = true; //use to hide login tab when we are in login
             Auth.getUserInfo().then(function (data) {
-                appMsg.username = data.data.username;
-                appMsg.useremail = data.data.email;
+                app.username = data.data.username;
+                app.useremail = data.data.email;
                 User.getPermission().then(function (data) {
                     if(data.data.permission === 'admin' || data.data.permission === 'moderator'){
-                        appMsg.authorized = true;
-                        appMsg.loadingContent = true;
+                        app.authorized = true;
+                        app.loadingContent = true;
                     } else {
 
-                        appMsg.loadingContent = true;
+                        app.loadingContent = true;
                     }
                 })
-                appMsg.loadingContent = true;
+                app.loadingContent = true;
             });
             // console.log("User is on login");
         } else {
-            appMsg.isLoggedIn = false;//use to show login tab when we are in login
-            appMsg.username = '';
-            appMsg.loadingContent = true;
+            app.isLoggedIn = false;//use to show login tab when we are in login
+            app.username = '';
+            app.loadingContent = true;
         }
     })
 
         //do function doLogin
     this.doLogin = function (loginData) {
-        appMsg.loading = true;
-        appMsg.errorMsg = false;
-        appMsg.successMsg = false;
-        appMsg.expired = false;
-        appMsg.disabled = false;
+        app.loading = true;
+        app.errorMsg = false;
+        app.successMsg = false;
+        app.expired = false;
+        app.disabled = false;
         Auth.login(this.loginData)
             .then(function (data) {
                 if(data.data.success){
-                    appMsg.loading = false;
-                    // appMsg.checkSession(); //check for session start when user login. token or session just the same way
-                    appMsg.successMsg = data.data.message+' ... Redirecting to home page';
+                    app.loading = false;
+                    // app.checkSession(); //check for session start when user login. token or session just the same way
+                    app.successMsg = data.data.message+' ... Redirecting to home page';
                     $timeout(function () {
-                       // appMsg.loginData = '';
+                       // app.loginData = '';
                         $location.path('/home');
                     },10)
                 } else {
                     if(data.data.expired){
-                        appMsg.disabled = true;
-                        appMsg.expired = true;
-                        appMsg.loading = false;
-                        appMsg.errorMsg = data.data.message;
+                        app.disabled = true;
+                        app.expired = true;
+                        app.loading = false;
+                        app.errorMsg = data.data.message;
                     } else {
-                        appMsg.loading = false;
-                        appMsg.errorMsg = data.data.message;
+                        app.loading = false;
+                        app.errorMsg = data.data.message;
                     }
                 }
             })
@@ -107,6 +107,14 @@ angular.module('mainControllers', ['authServices'])
     }
 
   //  pull all status to show on index.html
+  User.getAllStatus().then(function(data){
+    if(data.data.success){
+      app.allStatus = data.data.status;
+    } else {
+      app.errorMsg = data.data.message;
+    }
+  })
+
 
 
 

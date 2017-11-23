@@ -1,14 +1,14 @@
 <div class="container">
   <div>Hello. This is Home of {{main.username}}</div>
-  <div class="panel-group" ng-repeat = "status in home.allStatus">
+  <div class="panel-group" ng-repeat = "status in main.allStatus">
       <div class="panel panel-default">
         <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.username}} {{status.title}}</a></div>
         <div class="panel-body">{{status.content}}</div>
       </div>
   </div>
-  <div class="row show-hide-message" ng-show="home.errorMsg">
+  <div class="row show-hide-message" ng-show="main.errorMsg">
       <div class="alert alert-danger">
-          {{home.errorMsg}}
+          {{main.errorMsg}}
       </div>
   </div>
 </div>

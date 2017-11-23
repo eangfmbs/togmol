@@ -101,11 +101,19 @@ angular.module('userServices',[])
     //User.deleteTalkStatus(id)
     userFactory.deleteTalkStatus = function(id){
       return $http.delete('/api/deletetalk/'+id);
+    };
+    //User.checkLike(id)
+    userFactory.checkLike = function(id){
+      return $http.get('/api/checkIfLike/'+id)
     }
     //User.likeTalk(id)
     userFactory.likeTalk = function(id){
       return $http.post('/api/peopleliketalkcontent/'+id);
-    }
+    };
+    //User.unlikeTalk(id)
+    userFactory.unlikeTalk = function(id){
+      return $http.delete('/api/peopleUnlikecontent/'+id);
+    };
 
     return userFactory;
 });

@@ -674,9 +674,9 @@ module.exports = function (router) {
           handleError(err);
         } else {
             if (talk.username === req.decoded.username){
-              res.json({success: true, talk: talk, enabledEdit: true})
+              res.json({success: true, talk: talk, like: talk.totallike, enabledEdit: true})
             } else {
-              res.json({success: true, talk: talk, enabledEdit: false})
+              res.json({success: true, talk: talk, like: talk.totallike, enabledEdit: false})
             }
           }
       })
@@ -797,10 +797,27 @@ module.exports = function (router) {
 
     })
 
+    //check if the user like talk status already yet?. in fact we need to geet all like number of comment and share in status collection "JUST ADD LATER :)"
+    router.get('/checkIfLike/:id', function(req, res){
+      var like = new Like();
+      Like.findOne({username: req.decoded.username, statusid: req.params.id}, function(err, isLike){
+        if(err){
+          console.log('fucking shit!')
+        } else {
+            if(!isLike){
+              console.log('We cannot found record and this is the id')
+              return res.json({isLike: false, symbol: 'Like'})
+            } else {
+              console.log('found like record')
+              return res.json({isLike: true, symbol: 'Unlike'})
+            }
+        }
+      })
+    })
+
     //Like talk content and save that user to like document
     router.post('/peopleliketalkcontent/:id', function(req, res){
       var like = new Like();
-      // var status = new Status();
        like.statusid = req.params.id;
        like.username = req.decoded.username;
        Status.findOne({_id: req.params.id}, function(err, status){
@@ -808,12 +825,13 @@ module.exports = function (router) {
            return handleError(err);
          } else {
            currentLike = status.totallike;
-           countLike = currentLike+1;
+           countLike = currentLike + 1;
            Status.findOneAndUpdate({_id: req.params.id}, {totallike: countLike}, {new: true}, function(err, like){
              if(err){
                return handleError(err);
              } else {
-               console.log("success update!")
+               countLike=like.totallike;
+               console.log('this is count like: ', countLike)
              }
            })
          }
@@ -822,10 +840,40 @@ module.exports = function (router) {
          if(err){
          return res.json({success: false, message: 'You are already like this talk'})
          } else {
-       return res.json({success: true, message:'You like this talk'})
+       return res.json({success: true, like:countLike, symbol: 'Unlike'})
      }
    })
 })
+
+//this one will delete like user from DB if the user change their mind to unlike talk status
+router.delete('/peopleUnlikecontent/:id', function(req, res){
+  var statusid = req.params.id;
+  var likeuser = req.decoded.username;
+  Status.findOne({_id: statusid}, function(err, status){
+    if(err){
+      return handleError(err);
+    } else {
+      currentLike = status.totallike;
+      countLike = currentLike - 1;
+      Status.findOneAndUpdate({_id: statusid},{totallike: countLike},{new: true}, function(err,like){
+        if(err){
+          return handleError(err);
+        } else{
+          countLike = like.totallike;
+          console.log('now the count like decrease to: ', countLike)
+        }
+      })
+    }
+  })
+  Like.findOneAndRemove({username: likeuser, statusid: statusid}, function(err, unlike){
+    if(err){
+      return handleError(err);
+    } else {
+      return res.json({success: true, unlike: countLike, symbol: 'Like'})
+    }
+  })
+})
+
 
     return router;
 };

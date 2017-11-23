@@ -1,6 +1,6 @@
 <div class="container">
   <div class="panel panel-info">
-    <div class="panel-heading">{{talk.status.username}} {{talk.status.title}}</div>
+    <div class="panel-heading">{{talk.status.username}} {{talk.status.title}} {{talk.status.totallike}}</div>
 
     <div>
       <button ng-show="talk.enabledEdit" class="btn btn-info" type="submit"><a href="/updatetalk/{{talk.status._id}}">Update?</a></button>
@@ -9,10 +9,10 @@
       <button ng-show="talk.enabledEdit" type="button" class="btn btn-danger" ng-click="talk.deleteTalk()">Delete?</button>
     </div>
     <div>
-      <button  type="button" class="btn btn-success" ng-click="talk.likeTalk()">Like?</button>
+      <button  type="button" class="btn btn-success" ng-click="talk.likeClick()" ng-model="likeCount">{{talk.likeSymbol}} {{talk.totallike}}</button>
     </div>
     <!-- <div>
-      <button  type="button" class="btn btn-success" if-btn-not-active ng-click="talk.likeTalk(false)">Like?</button>
+      <button  type="button" class="btn btn-success" if-btn-not-active ng-click="talk.likeTalk(false)">Like?</button>  ng-init="liked='Like'; likeCount=0"
     </div>
     <div>
       <button  type="button" class="btn btn-success" if-btn-active ng-click="talk.likeTalk(true)">Dislike?</button>
