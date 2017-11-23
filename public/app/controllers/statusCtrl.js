@@ -38,6 +38,14 @@ angular.module('statusController',['userServices'])
     }
   })
 })
+// .controller('talkCtrl', ['Socialshare', function testController(Socialshare) {
+//
+//     Socialshare.share({
+//       'provider': 'facebook',
+//       'attrs': {
+//         'socialshareUrl': 'http://720kb.net'
+//       }
+//     })
 .controller('talkCtrl', function(User, $scope, $timeout, $location, $routeParams){
   var app = this;
   app.errorMsg = false
