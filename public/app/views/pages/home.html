@@ -1,6 +1,7 @@
-<div class="container">
+<div class="container" infinite-scroll="main.nextPage()"
+infinite-scroll-disabled="main.busy||main.noMoreData" infinite-scroll-distance="2">
   <div>Hello. This is Home of {{main.username}}</div>
-  <div class="panel-group" ng-repeat = "status in main.allStatus">
+  <div class="panel-group" ng-repeat = "status in main.allStatus track by $index">
       <div class="panel panel-default">
         <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.username}} {{status.title}}</a></div>
         <div class="panel-body">{{status.content}}</div>
@@ -11,4 +12,5 @@
           {{main.errorMsg}}
       </div>
   </div>
+  <div ng-show="main.busy"><H1>Loading Data..</H1></div>
 </div>

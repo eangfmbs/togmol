@@ -1,6 +1,11 @@
 angular.module('mainControllers', ['authServices'])
-.controller('mainCtrl', function (Auth,$timeout,$location,$rootScope,$interval,$window,User) {
+.controller('mainCtrl', function (Auth,$timeout,$location,$scope,$rootScope,$interval,$window,User) {
     var app = this;
+    app.busy = false;
+    var allTalkData = [];
+    var step = 2;
+    var page = 0;
+    var length = 0;
     app.loadingContent = false; //don't show html part of angular until it finish loading data
     //this will help preventing user to see any content that surrounding data of angular syntax like {{..}}
 
@@ -107,16 +112,47 @@ angular.module('mainControllers', ['authServices'])
     }
 
   //  pull all status to show on index.html
+
   User.getAllStatus().then(function(data){
     if(data.data.success){
-      app.allStatus = data.data.status;
+      length = data.data.status.length;
+      allTalkData = data.data.status;
+      app.nextPage = function(){
+        if(app.busy){
+          console.log("out of DAta1")
+          return;
+        }
+        // app.busy = true;
+        for(var i=0;i<length;i++){
+          app.allStatus = data.data.status
+
+          app.allStatus.push(allTalkData[i])
+          console.log("out of DAta3")
+
+        }
+        page++;
+        console.log("out of DAta2")
+        app.busy = true;;
+      };
+
     } else {
       app.errorMsg = data.data.message;
     }
   })
 
-
-
-
+  // app.nextPage = function(){
+  //   if(!app.busy){
+  //     return;
+  //   }
+  //   app.busy = true;
+  //   app.allStatus = app.allTalkData.concat(app.allTalkData.splice(page*step, step))
+  //   console.log('this is app. ', app.allStatus)
+  //   page++;
+  //   app.busy = false;
+  //   if(length === 0){
+  //     app.noMoreData = true;
+  //     console.log("out of DAta")
+  //   }
+  // }
 
 });

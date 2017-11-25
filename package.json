@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/eangfmbs/togmol#readme",
   "dependencies": {
+    "@angular/cdk": "^5.0.0-rc.1",
+    "@angular/material": "^5.0.0-rc.1",
     "angular-socialshare": "^2.3.11",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.1",
