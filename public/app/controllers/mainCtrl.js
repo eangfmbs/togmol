@@ -125,13 +125,9 @@ angular.module('mainControllers', ['authServices'])
         // app.busy = true;
         for(var i=0;i<length;i++){
           app.allStatus = data.data.status
-
           app.allStatus.push(allTalkData[i])
-          console.log("out of DAta3")
-
         }
         page++;
-        console.log("out of DAta2")
         app.busy = true;;
       };
 

@@ -102,9 +102,24 @@ angular.module('userServices',[])
     userFactory.deleteTalkStatus = function(id){
       return $http.delete('/api/deletetalk/'+id);
     };
+    //User.deleteComment
+    userFactory.deleteComment = function(objectCmt){
+      console.log("This is the object of ID Coment: ", objectCmt._id)
+      return $http.delete('/api/deleteCommnet/'+objectCmt);
+    }
+    //User.getComment()
+    userFactory.getComment = function(){
+      return $http.get('/api/getCommntToUpdate');
+    }
+    //User.updateComment
+    userFactory.updateComment = function(){
+      return $http.put('/api/updateCommnent');
+    }
+
+    //this is the part of like
     //User.checkLike(id)
     userFactory.checkLike = function(id){
-      return $http.get('/api/checkIfLike/'+id)
+      return $http.get('/api/checkiflike/'+id)
     }
     //User.likeTalk(id)
     userFactory.likeTalk = function(id){
@@ -113,6 +128,20 @@ angular.module('userServices',[])
     //User.unlikeTalk(id)
     userFactory.unlikeTalk = function(id){
       return $http.delete('/api/peopleUnlikecontent/'+id);
+    };
+
+    //this is the part of vote
+    //User.checkLikeComment
+    userFactory.checkVoteComment = function(id){
+      return $http.get('api/checkifvotecomment/'+id);
+    };
+    //User.likeTalkComment(commentid)
+    userFactory.voteTalkComment = function(id){
+      return $http.post('/api/peoplevotetalkcomment/'+id);
+    };
+    //User.unlikeTalkComment(commentid)
+    userFactory.unvoteTalkComment = function(id){
+      return $http.delete('/api/peopleunvotetalkcomment/'+id);
     };
 
     return userFactory;

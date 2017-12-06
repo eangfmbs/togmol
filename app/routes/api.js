@@ -1,17 +1,20 @@
 var User        = require('../models/user');
 var Status      = require('../models/status');
 var Comment     = require('../models/comment');
+var Vote        = require('../models/vote');
 var Like        = require('../models/like');
 var jwt         = require('jsonwebtoken');
 var nodemailer  = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
 var secret      = 'intelligent'; //whatever it just a secret
-var countComment= 0;
-var currentTotal= 0;
-var countLike = 0;
-var currentLike = 0;
-var countView = 0;
-var currentView = 0;
+var countComment = 0;
+var currentTotal = 0;
+var countLike    = 0;
+var currentLike  = 0;
+var countView    = 0;
+var currentView  = 0;
+var countVote    = 0;
+var currentVote  = 0;
 
 //create new user route (http://localhost:8080/api/users)
 module.exports = function (router) {
@@ -737,7 +740,21 @@ module.exports = function (router) {
         if(err){
           return handleError(err);
         } else {
-          return res.json({success: true, comments: comments});
+
+            Vote.find({}, function(err, votes){ //statusid is the id of the status in comment document
+              if(err){
+                return handleError(err);
+              } else {
+                     if(!votes){
+                       return res.json({success: true,comments: comments, votes: votes, ownuserandcmm: req.decoded.username, votestatus: 'Unvote'});
+                     } else {
+                       return res.json({success: true,comments: comments, votes: votes, ownuserandcmm: req.decoded.username, votestatus: 'Vote'});
+                     }
+              }
+            })
+
+
+            // return res.json({success: true, comments: comments, ownuserandcmm: req.decoded.username});
         }
       })
     })
@@ -809,12 +826,37 @@ module.exports = function (router) {
 
     })
 
+    //Delete commnent in talk
+    router.delete('/deleteCommnet/:id', function(req, res){
+      var deleteID = req.params.id;
+      console.log("Hello user null22222")
+
+      Comment.findOne({username: req.decoded.username}, function(err, user){
+        if(err){
+          return handleError(err);
+        } else {
+          if(user){
+            Comment.findOneAndRemove({_id: deleteID}, function(err, cmm){
+              if(err){
+                return handleError(err);
+              } else {
+                return res.json({success: true, message:'Message has been deleted'})
+              }
+            })
+          }
+          else {
+            return res.json({success: false, message: 'You are not the owner of this comment'})
+          }
+        }
+      })
+    })
+
     //check if the user like talk status already yet?. in fact we need to geet all like number of comment and share in status collection "JUST ADD LATER :)"
-    router.get('/checkIfLike/:id', function(req, res){
+    router.get('/checkiflike/:id', function(req, res){
       var like = new Like();
       Like.findOne({username: req.decoded.username, statusid: req.params.id}, function(err, isLike){
         if(err){
-          console.log('fucking shit!')
+          return handleError(err);
         } else {
             if(!isLike){
               console.log('We cannot found record and this is the id')
@@ -886,6 +928,114 @@ router.delete('/peopleUnlikecontent/:id', function(req, res){
   })
 })
 
+//this part is for vote comment section
+//check vote first
+router.get('/checkifvotecomment/:id', function(req, res){
+  var vote = new Vote();
+  Vote.findOne({username: req.decoded.username, commentid: req.params.id}, function(err, isVoteComment){
+    if(err){
+      return handleError(err);
+    } else {
+        if(!isVoteComment){
+          console.log('We cannot found record and this is the id')
+          return res.json({isVoteComment: false, symbol: 'Vote'})
+        } else {
+          console.log('found vote record')
+          return res.json({isVoteComment: true, symbol: 'Unvote'})
+        }
+    }
+  })
+})
+//route to get data of the comment on talk page back after comment and show it instantly
+// router.get('/comment/:id', function(req, res){
+//   var idOfStatus = req.params.id;
+  // Vote.find({}, function(err, votes){ //statusid is the id of the status in comment document
+  //   if(err){
+  //     return handleError(err);
+  //   } else {
+  //          if(vote.username === req.decoded.username){
+  //            return res.json({success: true, votes: votes, ownuserandcmm: req.decoded.username, votestatus: 'Unvote'});
+  //          } else {
+  //            return res.json({success: true, votes: votes, ownuserandcmm: req.decoded.username, votestatus: 'Vote'});
+  //          }
+  //   }
+  // })
+// })
+
+
+
+
+
+
+//router forvotecomment
+router.post('/peoplevotetalkcomment/:id', function(req, res){
+    var vote = new Vote();
+     vote.commentid = req.params.id;
+     vote.username = req.decoded.username;
+     Comment.findOne({_id: req.params.id}, function(err, comment){
+       if(err){
+         return handleError(err);
+       } else {
+         currentVote = comment.vote;
+         countVote = currentVote + 1;
+         Comment.findOneAndUpdate({_id: req.params.id}, {vote: countVote}, {new: true}, function(err, vote){
+           if(err){
+             return handleError(err);
+           } else {
+             countVote=vote.vote;
+             console.log('this is count vote: ', countVote)
+           }
+         })
+       }
+     })
+       vote.save(function(err){
+       if(err){
+       return res.json({success: false, message: 'You are already vote this talk'})
+       } else {
+     return res.json({success: true, vote:countVote, symbol: 'Unvote'})
+   }
+  })
+})
+
+//this one will delete vote user from DB if the user change their mind to unvote talk comment status
+router.delete('/peopleunvotetalkcomment/:id', function(req, res){
+  var commentid = req.params.id;
+  var voteuser = req.decoded.username;
+  Comment.findOne({_id: commentid}, function(err, comment){
+    if(err){
+      return handleError(err);
+    } else {
+      currentVote = comment.vote;
+      countVote = currentVote - 1;
+      Comment.findOneAndUpdate({_id: commentid},{vote: countVote},{new: true}, function(err,vote){
+        if(err){
+          return handleError(err);
+        } else{
+          countVote = vote.vote;
+          console.log('now the count vote decrease to: ', countVote)
+        }
+      })
+    }
+  })
+  Vote.findOneAndRemove({username: voteuser, commentid: commentid}, function(err, unvote){
+    if(err){
+      return handleError(err);
+    } else {
+      return res.json({success: true, unvote: countVote, symbol: 'Vote'})
+    }
+  })
+})
+
+// //check for all vote comment: the status of each one of vote in each comments
+// router.get('/checkeachstatusvoteintalkcomment:id', function(req, res){ // the id of status
+//   Comment.find({_id:req.params.id}, function(err, votestatus){
+//     if(err){
+//       return handleError(err);
+//     } else {
+//
+//     }
+//   })
+// })
 
     return router;
 };

@@ -9,7 +9,7 @@
       <button ng-show="talk.enabledEdit" type="button" class="btn btn-danger" ng-click="talk.deleteTalk()">Delete?</button>
     </div>
     <div>
-      <button  type="button" class="btn btn-success" ng-click="talk.likeClick()" ng-model="likeCount">{{talk.likeSymbol}} {{talk.totallike}}</button>
+      <button  type="button" class="btn btn-success" ng-click="talk.likeClick()">{{talk.likeSymbol}} {{talk.totallike}}</button>
     </div>
     <div>
       <a href="#"
@@ -37,7 +37,7 @@
       <div class="input-group input-group-lg">
           <input type="text" class="form-control" name="comment" placeholder="What's on your mind.." ng-model = talk.commentData.comment>
           <span class="input-group-btn">
-            <button class="btn btn-info" type="submit">Comment</button>
+            <button class="show-button btn btn-info" type="submit">Comment</button>
           </span>
       </div>
   </form>
@@ -63,10 +63,16 @@
   </div>
 
   <div><h2>This is the comment of this status</h2></div>
-  <div class="panel-group" ng-repeat = "comment in talk.allComments">
+  <div class="panel-group" ng-repeat = "comment in talk.allComments"> //ng reapeat and check condition is acooment of other who else to show delete button
       <div class="panel panel-default">
         <div class="panel-heading">{{comment.username}}</div>
         <div class="panel-body">{{comment.comment}}</div>
+        <div>
+          <button class="btn btn-primary" type="button" ng-click="talk.clickVoteComment(comment._id)">{{comment.vote}} {{talk.voteSymbol}} {{talk.totalvote}}</button>
+        </div>
+        <div>
+          <button ng-show="comment.username===talk.userDecode" class="btn btn-danger" type="submit" ng-click="talk.deleteCommnet(comment._id)">Delete?</button>
+        </div>
       </div>
   </div>
 </div>

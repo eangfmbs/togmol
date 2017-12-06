@@ -55,6 +55,7 @@ angular.module('statusController',['userServices'])
       app.status = data.data.talk;
       console.log('this talk view is: ', data.data.views)
       app.totallike = data.data.like;
+      //check for comment vote when start up the page
         User.checkLike($routeParams.id).then(function(data){//check fo get initial value of like or unlike
           if(!data.data.isLike){
             app.likeSymbol = data.data.symbol;
@@ -63,7 +64,9 @@ angular.module('statusController',['userServices'])
             console.log("what is symbol now: ", data.data.symbol)
             app.likeSymbol = data.data.symbol;
           }
-        })
+        });
+        //check for comment vote when start up the page
+        // User.checkVoteComment()
     } else {
       app.enabledEdit = data.data.enabledEdit;
       app.errorMsg = true;
@@ -86,8 +89,10 @@ angular.module('statusController',['userServices'])
   function loadComment(){
     User.getAllCommetInCurrentStatus($routeParams.id).then(function(data){
       if(data.data.success){
-        console.log("Load all the time! fuck!!!")
+        app.userDecode = data.data.ownuserandcmm;
         app.allComments = data.data.comments;
+        app.voteSymbol = data.data.votestatus;
+        console.log("comment data: ", app.allComments[2])
       }
     })
   }
@@ -96,7 +101,6 @@ angular.module('statusController',['userServices'])
 //like talk topic
     app.likeClick = function () {
       var hasLiked = false; //initial that user haven't like yet
-
       // check if the user has been click like yet
       User.checkLike($routeParams.id).then(function(data){
         if(!data.data.isLike){
@@ -120,6 +124,33 @@ angular.module('statusController',['userServices'])
       })
     }
 
+    //like comment status
+    app.clickVoteComment = function(commentID){
+      app.hasVoted = false;
+      console.log('this is the vote comment id: ', commentID);
+      User.checkVoteComment(commentID).then(function(data){
+        if(!data.data.isVoteComment){
+          User.voteTalkComment(commentID).then(function(data){
+            if(data.data.success){
+              hasVoted = true;
+              app.voteSymbol = data.data.symbol;
+              app.totalvote = data.data.vote; //likeCount
+              console.log(data.data.vote)
+            }
+          })
+        } else {
+          User.unvoteTalkComment(commentID).then(function(data){
+            if(data.data.success){
+              hasVoted = false;
+              app.voteSymbol = data.data.symbol;
+              app.totalvote = data.data.unvote; //likeCount
+            }
+          })
+        }
+      })
+
+    }
+
 
     // app.likeTalk = function(){
     //   User.likeTalk($routeParams.id).then(function(data){
@@ -132,6 +163,7 @@ angular.module('statusController',['userServices'])
     // }
 //for delete topic of talk
     app.deleteTalk = function(){
+      app.errorMsg = false;
       User.deleteTalkStatus($routeParams.id).then(function(data){
         if(data.data.success){
           $timeout(function () {
@@ -143,7 +175,54 @@ angular.module('statusController',['userServices'])
       })
     }
 
+    //delete comment
+    app.deleteCommnet = function(commentID){
+      app.errorMsg = false;
+      User.deleteComment(commentID).then(function(data){
+        if(data.data.success){
+          $timeout(function(){
+            $location.path('/profile')
+          }, 0)
+        } else {
+          app.errorMsg = data.data.message;
+        }
+      })
+    }
+
+
 })
+// .directive('showButton', ['webNotification', function (webNotification) {
+// return {
+//     ...
+//     link: function (scope, element) {
+//         element.on('click', function onClick() {
+//             webNotification.showNotification('Example Notification', {
+//                 body: 'Notification Text...',
+//                 icon: 'my-icon.ico',
+//                 onClick: function onNotificationClicked() {
+//                     console.log('Notification clicked.');
+//                 },
+//                 autoClose: 4000 //auto close the notification after 4 seconds (you can manually close it via hide function)
+//             }, function onShow(error, hide) {
+//                 if (error) {
+//                     window.alert('Unable to show notification: ' + error.message);
+//                 } else {
+//                     console.log('Notification Shown.');
+//
+//                     setTimeout(function hideNotification() {
+//                         console.log('Hiding notification....');
+//                         hide(); //manually close the notification (you can skip this if you use the autoClose option)
+//                     }, 5000);
+//                 }
+//             });
+//         });
+//     }
+// };
+// }])
+//
+
+
+
 .controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){
   var app = this;
   User.getData2UpdateStatusTalk($routeParams.id).then(function(data){
