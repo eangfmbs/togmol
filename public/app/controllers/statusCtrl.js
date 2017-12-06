@@ -90,9 +90,10 @@ angular.module('statusController',['userServices'])
     User.getAllCommetInCurrentStatus($routeParams.id).then(function(data){
       if(data.data.success){
         app.userDecode = data.data.ownuserandcmm;
+        app.votes = data.data.votes;
         app.allComments = data.data.comments;
-        app.voteSymbol = data.data.votestatus;
-        console.log("comment data: ", app.allComments[2])
+        console.log("Comment Data: ", app.allComments)
+        console.log("Vote Data: ", app.votes)
       }
     })
   }
@@ -127,10 +128,12 @@ angular.module('statusController',['userServices'])
     //like comment status
     app.clickVoteComment = function(commentID){
       app.hasVoted = false;
-      console.log('this is the vote comment id: ', commentID);
+      var objectComment = {};
+      objectComment.statusid = $routeParams.id;
+      objectComment.commentid = commentID;
       User.checkVoteComment(commentID).then(function(data){
         if(!data.data.isVoteComment){
-          User.voteTalkComment(commentID).then(function(data){
+          User.voteTalkComment(objectComment).then(function(data){
             if(data.data.success){
               hasVoted = true;
               app.voteSymbol = data.data.symbol;

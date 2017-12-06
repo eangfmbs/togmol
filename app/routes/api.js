@@ -740,21 +740,15 @@ module.exports = function (router) {
         if(err){
           return handleError(err);
         } else {
-
-            Vote.find({}, function(err, votes){ //statusid is the id of the status in comment document
+            Vote.find({statusid: idOfStatus}, function(err, votes){ //statusid is the id of the status in comment document
               if(err){
                 return handleError(err);
               } else {
-                     if(!votes){
-                       return res.json({success: true,comments: comments, votes: votes, ownuserandcmm: req.decoded.username, votestatus: 'Unvote'});
-                     } else {
-                       return res.json({success: true,comments: comments, votes: votes, ownuserandcmm: req.decoded.username, votestatus: 'Vote'});
-                     }
+                  return res.json({success: true,comments: comments, votes: votes, ownuserandcmm: req.decoded.username});
               }
             })
 
-
-            // return res.json({success: true, comments: comments, ownuserandcmm: req.decoded.username});
+            // return res.json({success: true, comments: comments, ownuserandcmm: req.decoded.username, votestatus: 'Vote'});
         }
       })
     })
@@ -968,17 +962,20 @@ router.get('/checkifvotecomment/:id', function(req, res){
 
 
 //router forvotecomment
-router.post('/peoplevotetalkcomment/:id', function(req, res){
+router.post('/peoplevotetalkcomment', function(req, res){
     var vote = new Vote();
-     vote.commentid = req.params.id;
+     vote.commentid = req.body.commentid;
+     vote.statusid = req.body.statusid;
      vote.username = req.decoded.username;
-     Comment.findOne({_id: req.params.id}, function(err, comment){
+     console.log('this is comment ID: ', vote.commentid)
+     console.log('this is status ID: ', vote.statusid)
+     Comment.findOne({_id: vote.commentid}, function(err, comment){
        if(err){
          return handleError(err);
        } else {
          currentVote = comment.vote;
          countVote = currentVote + 1;
-         Comment.findOneAndUpdate({_id: req.params.id}, {vote: countVote}, {new: true}, function(err, vote){
+         Comment.findOneAndUpdate({_id: vote.commentid}, {vote: countVote}, {new: true}, function(err, vote){
            if(err){
              return handleError(err);
            } else {

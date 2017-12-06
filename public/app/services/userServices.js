@@ -136,8 +136,8 @@ angular.module('userServices',[])
       return $http.get('api/checkifvotecomment/'+id);
     };
     //User.likeTalkComment(commentid)
-    userFactory.voteTalkComment = function(id){
-      return $http.post('/api/peoplevotetalkcomment/'+id);
+    userFactory.voteTalkComment = function(voteTalkComment){
+      return $http.post('/api/peoplevotetalkcomment' ,voteTalkComment);
     };
     //User.unlikeTalkComment(commentid)
     userFactory.unvoteTalkComment = function(id){

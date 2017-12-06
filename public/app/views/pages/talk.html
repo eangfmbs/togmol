@@ -68,7 +68,7 @@
         <div class="panel-heading">{{comment.username}}</div>
         <div class="panel-body">{{comment.comment}}</div>
         <div>
-          <button class="btn btn-primary" type="button" ng-click="talk.clickVoteComment(comment._id)">{{comment.vote}} {{talk.voteSymbol}} {{talk.totalvote}}</button>
+          <button ng-if="comment.username===talk.userDecode" class="btn btn-primary" type="button" ng-click="talk.clickVoteComment(comment._id)">{{comment.vote}} {{talk.voteSymbol}} {{talk.totalvote}}</button>
         </div>
         <div>
           <button ng-show="comment.username===talk.userDecode" class="btn btn-danger" type="submit" ng-click="talk.deleteCommnet(comment._id)">Delete?</button>
