@@ -87,13 +87,36 @@ angular.module('statusController',['userServices'])
   }
 
   function loadComment(){
+    app.arrVote = [];
+    app.arrUnvote = [];
+    app.freshcomment = false;
     User.getAllCommetInCurrentStatus($routeParams.id).then(function(data){
       if(data.data.success){
+        app.allvotes = data.data.votes;
+        app.allvotelength = data.data.votes.length;
+        if(app.allvotelength === 0){
+          app.freshcomment = true;
+          app.voteSymbol = "Vote"
+          console.log("This is Symbol fresh: ", app.voteSymbol)
+        }
         app.userDecode = data.data.ownuserandcmm;
-        app.votes = data.data.votes;
+        app.allvotes.forEach(function(vote){
+
+          if(vote.username === app.userDecode){
+            app.arrVote.push(vote);
+            app.voteSymbol = "Vote";
+            console.log("Vote in foreach Data that has the same decoded of eangfmbs: ", app.arrVote)
+          } else {
+            app.arrUnvote.push(vote);
+            app.voteSymbol = "Unvote";
+            console.log("Vote in foreach Data that has'nt the same decoded: ", app.arrUnvote)
+          }
+        })
         app.allComments = data.data.comments;
+        app.voteSymbol = "Vote";
+        console.log("This is Symbol: ", app.voteSymbol)
         console.log("Comment Data: ", app.allComments)
-        console.log("Vote Data: ", app.votes)
+        console.log("Vote Data: ", app.allvotes)
       }
     })
   }
