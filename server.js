@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 var router     = express.Router();
 var appRoute   = require('./app/routes/api')(router);
 var path       = require('path');
+var passport   = require('passport');
+var social     = require('./app/passport/passport')(app, passport); //mean that we are passing 2 values from the server file to passport.js file is app that is belong to express and passport
 var port    = process.env.PORT || 8080;
 
 app.use(morgan('dev'));

@@ -93,27 +93,25 @@ angular.module('statusController',['userServices'])
     User.getAllCommetInCurrentStatus($routeParams.id).then(function(data){
       if(data.data.success){
         app.allvotes = data.data.votes;
-        app.allvotelength = data.data.votes.length;
-        if(app.allvotelength === 0){
-          app.freshcomment = true;
-          app.voteSymbol = "Vote"
-          console.log("This is Symbol fresh: ", app.voteSymbol)
-        }
-        app.userDecode = data.data.ownuserandcmm;
-        app.allvotes.forEach(function(vote){
-
-          if(vote.username === app.userDecode){
-            app.arrVote.push(vote);
-            app.voteSymbol = "Vote";
-            console.log("Vote in foreach Data that has the same decoded of eangfmbs: ", app.arrVote)
-          } else {
-            app.arrUnvote.push(vote);
-            app.voteSymbol = "Unvote";
-            console.log("Vote in foreach Data that has'nt the same decoded: ", app.arrUnvote)
-          }
-        })
         app.allComments = data.data.comments;
-        app.voteSymbol = "Vote";
+        app.userDecode = data.data.ownuserandcmm;
+        app.allComments.forEach(function(comment){
+          app.allvotes.forEach(function(vote){
+            if(vote.username === app.userDecode && vote.commentid === comment._id){
+              app.arrVote.push(vote);
+              app.voteSymbol = "Unvote";
+              // console.log("Vote in foreach Data that has the same decoded of eangfmbs: ", app.arrVote)
+            }
+            // if(vote._id !==app.arrUnvote._id){
+            //   app.arrUnvote.push(vote);
+            //   app.voteSymbol = "Unvote";
+            // }
+          })
+        })
+        console.log("Vote in foreach Data that has the same decoded of eangfmbs: ", app.arrVote)
+        // console.log("Vote in foreach Data that has'nt the same decoded: ", app.arrUnvote)
+
+        // app.voteSymbol = "Vote";
         console.log("This is Symbol: ", app.voteSymbol)
         console.log("Comment Data: ", app.allComments)
         console.log("Vote Data: ", app.allvotes)
@@ -150,7 +148,7 @@ angular.module('statusController',['userServices'])
 
     //like comment status
     app.clickVoteComment = function(commentID){
-      app.hasVoted = false;
+      // app.hasVoted = false;
       var objectComment = {};
       objectComment.statusid = $routeParams.id;
       objectComment.commentid = commentID;
@@ -158,18 +156,18 @@ angular.module('statusController',['userServices'])
         if(!data.data.isVoteComment){
           User.voteTalkComment(objectComment).then(function(data){
             if(data.data.success){
-              hasVoted = true;
+              // hasVoted = true;
               app.voteSymbol = data.data.symbol;
-              app.totalvote = data.data.vote; //likeCount
-              console.log(data.data.vote)
+              app.totalvote = data.data.vote; //voteCount
+              console.log('this is vote: ',data.data.vote)
             }
           })
         } else {
           User.unvoteTalkComment(commentID).then(function(data){
             if(data.data.success){
-              hasVoted = false;
+              // hasVoted = false;
               app.voteSymbol = data.data.symbol;
-              app.totalvote = data.data.unvote; //likeCount
+              app.totalvote = data.data.unvote; //voteCount
             }
           })
         }

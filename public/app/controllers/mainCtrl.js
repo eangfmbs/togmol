@@ -116,20 +116,20 @@ angular.module('mainControllers', ['authServices'])
   User.getAllStatus().then(function(data){
     if(data.data.success){
       length = data.data.status.length;
-      allTalkData = data.data.status;
-      app.nextPage = function(){
-        if(app.busy){
-          console.log("out of DAta1")
-          return;
-        }
-        // app.busy = true;
-        for(var i=0;i<length;i++){
+      // allTalkData = data.data.status;
+      // app.nextPage = function(){
+      //   if(app.busy){
+      //     console.log("out of DAta1")
+      //     return;
+      //   }
+      //   // app.busy = true;
+      //   for(var i=0;i<length;i++){
           app.allStatus = data.data.status
-          app.allStatus.push(allTalkData[i])
-        }
-        page++;
-        app.busy = true;;
-      };
+      //     app.allStatus.push(allTalkData[i])
+      //   }
+      //   page++;
+      //   app.busy = true;;
+      // };
 
     } else {
       app.errorMsg = data.data.message;
