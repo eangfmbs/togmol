@@ -18,7 +18,12 @@ angular.module('authServices',[])
                 return false;
             }
         };
-        
+
+        // Auth.facebook(token) //to save it in the client storage to keep user login
+        authFactory.facebook = function(token){
+          AuthToken.setToken(token);
+        }
+
         //get info about decrypt token from user
         authFactory.getUserInfo = function () {
             if(AuthToken.getToken()){

@@ -7,7 +7,7 @@
                 <label>Password</label>
                 <td><input class="form-control" ng-disabled="main.disable" type="password" name="pwd" ng-model="main.loginData.password"> </td>
                 <br /><button ng-disabled="main.disabled" class="btn btn-primary" type="submit" name="login">login</button>
-                <br /><a href="/auth/facebook" target="_blank"><button ng-disabled="main.disabled" class="btn btn-primary" type="button">Login with facebook</button></a>
+                <br /><button ng-disabled="main.disabled" class="btn btn-primary" ng-click = "main.facebook()" type="button">Login with facebook</button>
 
         <a href="/forgetpassword"><button  class="btn btn-danger" type="submit" name="login">forget password</button></a>
         <a href="/forgetusername"><button  class="btn btn-primary" type="submit" name="login">forget username</button></a>
@@ -19,6 +19,11 @@
     <div class="row show-hide-message" ng-show="main.errorMsg">
         <div class="alert alert-danger">
             {{main.errorMsg}} &nbsp; <a href="/resend" ng-show="main.expired"><button type="button" class="btn btn-primary">Resend for activation link </button></a>
+        </div>
+    </div>
+    <div class="row show-hide-message" ng-show="facebook.errorMsg">
+        <div class="alert alert-danger">
+            {{facebook.errorMsg}}
         </div>
     </div>
     <!--<div>-->

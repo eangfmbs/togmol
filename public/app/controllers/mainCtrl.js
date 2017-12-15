@@ -71,7 +71,12 @@ angular.module('mainControllers', ['authServices'])
             app.username = '';
             app.loadingContent = true;
         }
+        if($location.hash()=='_-_') $locatin.hash(null);
     })
+
+    this.facebook = function(){
+      $window.location = $window.location.protocol+'//'+$window.location.host+'/auth/facebook';
+    }
 
         //do function doLogin
     this.doLogin = function (loginData) {

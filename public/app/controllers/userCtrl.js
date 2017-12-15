@@ -1,4 +1,13 @@
 angular.module('userControllers',['userServices'])
+.controller('facebookCtrl', function($routeParams, Auth, $location, $window){
+  var appMsg = this;
+  if($window.location.pathname == '/facebookerror'){
+    appMsg.errorMsg = 'Facebook email is not found in database';
+  } else {
+    Auth.facebook($routeParams.token);
+    $location.path('/');
+  }
+})
 .controller('regCtrl',function($http,User,$location,$timeout) {
     var appMsg = this;
     this.regUser = function (regData, valid) {
