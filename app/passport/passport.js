@@ -16,7 +16,11 @@ module.exports = function(app, passport){
 }))
 
   passport.serializeUser(function(user, done) {
-  token = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
+    if(user.activate){
+      token = jwt.sign({username: user.username, email: user.email},secret, {expiresIn:'24h'});
+    } else {
+      token = 'inactivate/error'
+    }
   done(null, user.id);
   });
 
@@ -34,7 +38,7 @@ module.exports = function(app, passport){
   },
   function(accessToken, refreshToken, profile, done) {
     // console.log('this is profile of facebook data: ', profile)
-    User.findOne({email: profile._json.email}).select('username, password, email').exec(function(err, user){
+    User.findOne({email: profile._json.email}).select('username activate password email').exec(function(err, user){
       if(err){
         done(err);
       }

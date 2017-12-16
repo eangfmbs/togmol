@@ -3,11 +3,11 @@
     <form ng-submit="main.doLogin(loginData)">
 
                 <label>Username</label>
-                <input class="form-control" ng-disabled="main.disabled" type="text" name="username" ng-model="main.loginData.username">
+                <input class="form-control" ng-disabled="main.disabled || facebook.disabled" type="text" name="username" ng-model="main.loginData.username">
                 <label>Password</label>
-                <td><input class="form-control" ng-disabled="main.disable" type="password" name="pwd" ng-model="main.loginData.password"> </td>
-                <br /><button ng-disabled="main.disabled" class="btn btn-primary" type="submit" name="login">login</button>
-                <br /><button ng-disabled="main.disabled" class="btn btn-primary" ng-click = "main.facebook()" type="button">Login with facebook</button>
+                <td><input class="form-control" ng-disabled="main.disabled || facebook.disabled" type="password" name="pwd" ng-model="main.loginData.password"> </td>
+                <br /><button ng-disabled="main.disabled || facebook.disabled" class="btn btn-primary" type="submit" name="login">login</button>
+                <br /><button ng-disabled="main.disabled || facebook.disabled" class="btn btn-primary" ng-click = "main.facebook()" type="button">Login with facebook</button>
 
         <a href="/forgetpassword"><button  class="btn btn-danger" type="submit" name="login">forget password</button></a>
         <a href="/forgetusername"><button  class="btn btn-primary" type="submit" name="login">forget username</button></a>
@@ -23,7 +23,7 @@
     </div>
     <div class="row show-hide-message" ng-show="facebook.errorMsg">
         <div class="alert alert-danger">
-            {{facebook.errorMsg}}
+            {{facebook.errorMsg}}&nbsp; <a href="/resend" ng-show="facebook.expired"><button type="button" class="btn btn-primary">Resend for activation link </button></a>
         </div>
     </div>
     <!--<div>-->

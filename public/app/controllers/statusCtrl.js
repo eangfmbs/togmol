@@ -38,6 +38,35 @@ angular.module('statusController',['userServices'])
     }
   })
 })
+.controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){
+  var app = this;
+  User.getData2UpdateStatusTalk($routeParams.id).then(function(data){
+    if(data.data.success){
+      $scope.talkTitle = data.data.talk.title;
+      $scope.talkContent = data.data.talk.content;
+    } else {
+      app.errorMsg = data.data.message;
+    }
+  })
+
+  app.updateTalk = function(talkTitle, talkContent){
+    var objectUpdate4Talk = {};
+    objectUpdate4Talk.title = talkTitle;
+    objectUpdate4Talk.content = talkContent;
+    objectUpdate4Talk._id = $routeParams.id;
+    User.updateNewStatusTalk(objectUpdate4Talk).then(function(data){
+      if(data.data.success){
+        $timeout(function(){
+          $location.path('/talk/'+$routeParams.id);
+        },0)
+      } else {
+        app.errorMsg = data.data.message;
+      }
+    })
+  }
+
+
+})
 // .controller('talkCtrl', ['Socialshare', function testController(Socialshare) {
 //
 //     Socialshare.share({
@@ -48,6 +77,8 @@ angular.module('statusController',['userServices'])
 //     })
 .controller('talkCtrl', function(User, $scope, $timeout, $location, $routeParams){
   var app = this;
+  app.title = "Hello Eang";
+  app.text = "Some content goes here!";
   app.errorMsg = false
   User.getDiscussion($routeParams.id).then(function(data){
     if(data.data.success){
@@ -215,64 +246,36 @@ angular.module('statusController',['userServices'])
 
 
 })
-// .directive('showButton', ['webNotification', function (webNotification) {
-// return {
-//     ...
-//     link: function (scope, element) {
-//         element.on('click', function onClick() {
-//             webNotification.showNotification('Example Notification', {
-//                 body: 'Notification Text...',
-//                 icon: 'my-icon.ico',
-//                 onClick: function onNotificationClicked() {
-//                     console.log('Notification clicked.');
-//                 },
-//                 autoClose: 4000 //auto close the notification after 4 seconds (you can manually close it via hide function)
-//             }, function onShow(error, hide) {
-//                 if (error) {
-//                     window.alert('Unable to show notification: ' + error.message);
-//                 } else {
-//                     console.log('Notification Shown.');
-//
-//                     setTimeout(function hideNotification() {
-//                         console.log('Hiding notification....');
-//                         hide(); //manually close the notification (you can skip this if you use the autoClose option)
-//                     }, 5000);
-//                 }
-//             });
-//         });
-//     }
-// };
-// }])
-//
+.directive('showButton', ['webNotification', function (webNotification) {
+    'use strict';
 
+    return {
+        restrict: 'C',
+        scope: {
+            notificationTitle: '=',
+            notificationText: '='
+        },
+        link: function (scope, element) {
+            element.on('click', function onClick() {
+                webNotification.showNotification(scope.notificationTitle, {
+                    body: scope.notificationText,
+                    onClick: function onNotificationClicked() {
+                        console.log('Notification clicked.');
+                    },
+                    autoClose: 4000 //auto close the notification after 4 seconds (you can manually close it via hide function)
+                }, function onShow(error, hide) {
+                    if (error) {
+                        window.alert('Unable to show notification: ' + error.message);
+                    } else {
+                        console.log('Notification Shown.');
 
-
-.controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){
-  var app = this;
-  User.getData2UpdateStatusTalk($routeParams.id).then(function(data){
-    if(data.data.success){
-      $scope.talkTitle = data.data.talk.title;
-      $scope.talkContent = data.data.talk.content;
-    } else {
-      app.errorMsg = data.data.message;
-    }
-  })
-
-  app.updateTalk = function(talkTitle, talkContent){
-    var objectUpdate4Talk = {};
-    objectUpdate4Talk.title = talkTitle;
-    objectUpdate4Talk.content = talkContent;
-    objectUpdate4Talk._id = $routeParams.id;
-    User.updateNewStatusTalk(objectUpdate4Talk).then(function(data){
-      if(data.data.success){
-        $timeout(function(){
-          $location.path('/talk/'+$routeParams.id);
-        },0)
-      } else {
-        app.errorMsg = data.data.message;
-      }
-    })
-  }
-
-
-})
+                        setTimeout(function hideNotification() {
+                            console.log('Hiding notification....');
+                            hide(); //manually close the notification (you can skip this if you use the autoClose option)
+                        }, 5000);
+                    }
+                });
+            });
+        }
+    };
+}])

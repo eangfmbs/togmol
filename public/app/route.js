@@ -30,12 +30,20 @@ var app = angular.module('appRoutes', ['ngRoute'])
         .when('/facebook/:token', {
             templateUrl: '/app/views/pages/user/social/social.html',
             controller: 'facebookCtrl',
-            controllerAs: 'facebook'
+            controllerAs: 'facebook',
+            authenticated: false
         })
         .when('/facebookerror', {
             templateUrl: '/app/view/pages/user/login.html',
             controller: 'facebookCtrl',
-            controllerAs: 'facebook'
+            controllerAs: 'facebook',
+            authenticated: false
+        })
+        .when('/facebook/inactivate/error', {
+            templateUrl: '/app/view/pages/user/login.html',
+            controller: 'facebookCtrl',
+            controllerAs: 'facebook',
+            authenticated: false
         })
         .when('/activate/:token', {
             templateUrl: '/app/views/pages/user/activation/activate.html',
