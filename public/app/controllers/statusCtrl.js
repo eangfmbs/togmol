@@ -259,6 +259,7 @@ angular.module('statusController',['userServices'])
             element.on('click', function onClick() {
                 webNotification.showNotification(scope.notificationTitle, {
                     body: scope.notificationText,
+                    icon: 'https://tracker.moodle.org/secure/useravatar?size=small&avatarId=17380',
                     onClick: function onNotificationClicked() {
                         console.log('Notification clicked.');
                     },

@@ -10,7 +10,7 @@
       <textarea class="form-control" rows="5" name="content" ng-model="ask.askData.content"></textarea>
     </div>
     <br><button  class="btn btn-primary" type="submit">Post</button>
-
+    <tags-input ng-model="tags"></tags-input>
   </form>
   <div class="row show-hide-message" ng-show="ask.successMsg">
       <div class="alert alert-success">
