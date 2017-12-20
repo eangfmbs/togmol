@@ -15,6 +15,19 @@ angular.module('statusController',['userServices'])
     })
   }
 
+  function grapAllShowTags(){
+    User.showAllTag().then(function(data){
+      console.log(data)
+      if(data.data.success){
+        app.AllTag = data.data.tags;
+        console.log(app.AllTag);
+      } else {
+        console.log('no tag to show!')
+      }
+    })
+  }
+  grapAllShowTags();
+
 })
 
 // .controller('homeCtrl', function(User, $timeout, $location){

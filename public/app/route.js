@@ -88,6 +88,13 @@ var app = angular.module('appRoutes', ['ngRoute'])
           authenticated: true,
           permission: ['admin','moderator']
         })
+        .when('/managetag',{
+          templateUrl: '/app/views/pages/management/managetag.html',
+          controller: 'tagCtrl',
+          controllerAs: 'tag',
+          authenticated: true,
+          permission: ['admin','moderator']
+        })
         .when('/sharequestion',{
           templateUrl: '/app/views/pages/sharequestion.html',
           controller: 'askCtrl',

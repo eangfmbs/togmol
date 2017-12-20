@@ -61,7 +61,15 @@ angular.module('userServices',[])
     userFactory.deleteUserInManagement = function(username){
       return $http.delete('/api/management/'+username);
     };
-
+    //User.addingTag()
+    userFactory.addingTag = function(tagData){
+      console.log('in user service tag: ', tagData);
+      return $http.post('/api/tagtypedata', tagData);
+    }
+    //User.showAllTag()
+    userFactory.showAllTag = function(){
+      return $http.get('/api/listalltags');
+    }
 
     //From this route is the route for status when user post a content
     //User.postStatus(askData)

@@ -221,3 +221,33 @@ app.updatePermission = function(newPermission){
 }
 
 })
+.controller('tagCtrl', function(User, $scope){
+  var app = this;
+  app.addingTag = function(tagData){
+    console.log('Tag data is: ', app.tagData);
+    User.addingTag(app.tagData).then(function(data){
+      if(data.data.success){
+        app.tagData.tagname = undefined;
+        console.log('Tag has been saved!')
+        grapAllShowTags();
+      } else {
+        console.log('Fail to save tag')
+      }
+    })
+  }
+
+  function grapAllShowTags(){
+    User.showAllTag().then(function(data){
+      if(data.data.success){
+        app.AllTag = data.data.tags;
+        console.log(app.AllTag);
+      } else {
+        console.log('no tag to show!')
+      }
+    })
+  }
+  grapAllShowTags();
+
+
+
+})

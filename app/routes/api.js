@@ -3,6 +3,8 @@ var Status      = require('../models/status');
 var Comment     = require('../models/comment');
 var Vote        = require('../models/vote');
 var Like        = require('../models/like');
+var Tag         = require('../models/tag');
+var TagType     = require('../models/tagtype');
 var jwt         = require('jsonwebtoken');
 var nodemailer  = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
@@ -15,6 +17,7 @@ var countView    = 0;
 var currentView  = 0;
 var countVote    = 0;
 var currentVote  = 0;
+// to family and friend i would give what i have. to person i love i would give what don't have it
 
 //create new user route (http://localhost:8080/api/users)
 module.exports = function (router) {
@@ -622,6 +625,37 @@ module.exports = function (router) {
               }
             })
           }
+        }
+      })
+    })
+
+    //Adding tag route.
+    router.post('/tagtypedata', function(req, res){
+      var tagtype = new TagType();
+      tagtype.tagname = req.body.tagname;
+      if(tagtype.tagname == '' || tagtype.tagname == undefined){
+        res.json({success: false, message: "You hasn't enter any tag"})
+      } else {
+        tagtype.save(function(err){
+          if(err){
+            return handleError(err);
+          } else {
+            res.json({success: true, message: 'Tag has been saved to the DB'});
+          }
+        })
+      }
+    })
+    //list All tags
+    router.get('/listalltags', function(req, res){
+      TagType.find({}, function(err, tags){
+        if(err){
+          return handleError(err);
+        }
+        if(!tags){
+          return res.json({success: false, message:'There is no tag yet'});
+        }
+         else {
+          return res.json({success: true, tags: tags});
         }
       })
     })
