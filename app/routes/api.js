@@ -669,15 +669,36 @@ module.exports = function (router) {
         if(status.title=='' || status.title==undefined){
             res.json({success:false, message:'Please make sure title box is filled'})
         } else {
-            status.save(function (err) {
+            status.save(function (err, post) {
                 if(err){
                     console.log(err);
                 } else {
-                    res.json({success:true, message:'You post a status!'})
+                    res.json({success:true, message:'You post a status!', statusid:post._id})
                 }
             });
         }
     });
+
+    //insertTagsWhenPostQuestion
+    router.post('/inserttagswhenpostquestion', function(req, res){
+      var tag = new Tag();
+      tag.tagtypeid = req.body.tags;
+      tag.statusid = req.body.statusid;
+      console.log('hrr is tagtaype name:', tag.tagtypeid)
+      console.log('hrr is tagtaype statusid:', tag.statusid)
+
+      if(tag.tagtypeid=='' || tag.tagtypeid == undefined || tag.statusid=='' || tag.statusid == undefined){
+        return res.json({success:false, message: 'Please make sure you have already selected at least one tag'})
+      } else {
+          tag.save(function(err){
+            if(err){
+              return handleError(err);
+            } else {
+              res.json({success: true, message:'Successfully insert tags'})
+            }
+          })
+      }
+    })
 
     //get data from status collection to show on index.html
     router.get('/status', function(req, res){

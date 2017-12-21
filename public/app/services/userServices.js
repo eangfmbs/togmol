@@ -70,6 +70,12 @@ angular.module('userServices',[])
     userFactory.showAllTag = function(){
       return $http.get('/api/listalltags');
     }
+    //User.insertTagsWhenPostQuestion()
+    userFactory.insertTagsWhenPostQuestion = function(tags){
+      console.log('userServices tag: ', tags)
+      return $http.post('/api/inserttagswhenpostquestion', tags);
+    }
+
 
     //From this route is the route for status when user post a content
     //User.postStatus(askData)

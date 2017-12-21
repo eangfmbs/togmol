@@ -15,13 +15,13 @@
 
 
     <h3>Your Tag Data</h3>
-    <ui-select multiple ng-model="ask.multipleDemo.colors" theme="bootstrap" ng-disabled="ask.disabled" close-on-select="false" style="width: 300px;" title="Choose a color">
+    <ui-select multiple name="colors[]" ng-model="ask.askData.colors" theme="bootstrap" ng-disabled="ask.disabled" close-on-select="false" style="width: 300px;" title="Choose a color">
       <ui-select-match placeholder="Select tag...">{{$item}}</ui-select-match>
       <ui-select-choices repeat="color in ask.availableColors | filter:$select.search">
         {{color}}
       </ui-select-choices>
     </ui-select>
-    <p>Selected: {{ask.multipleDemo.colors}}</p>
+    <!-- <p>Selected: {{ask.multipleDemo.colors}}</p> -->
     <hr>
 
 

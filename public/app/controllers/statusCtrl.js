@@ -1,23 +1,10 @@
 angular.module('statusController',['userServices'])
-.controller('askCtrl', function(User, $timeout, $location){
+.controller('askCtrl', function(User, $scope, $timeout, $location){
   var app = this;
   app.arrTag = [];
-  //post a status
-  app.askQuestion = function(askData){
-    User.postStatus(app.askData).then(function(data){
-      if(data.data.success){
-        $timeout(function(){
-          $location.path('/');
-        },0)
-        app.successMsg = data.data.message;
-      } else {
-        app.errorMsg = data.data.message;
-      }
-    })
-  }
+  var postStatusObject = {};
 
   function grapAllShowTags(){
-
     User.showAllTag().then(function(data){
       console.log(data)
       if(data.data.success){
@@ -25,7 +12,7 @@ angular.module('statusController',['userServices'])
         app.AllTag.forEach(function(tag){
           app.arrTag.push(tag.tagname);
         })
-        console.log('hello TAG', app.arrTag);
+        console.log('hello TAG', app.arrTag.join());
       } else {
         console.log('no tag to show!')
       }
@@ -33,38 +20,36 @@ angular.module('statusController',['userServices'])
   }
   grapAllShowTags();
 
-  var vm = this;
+  app.disabled = undefined;
+  app.searchEnabled = undefined;
 
-  vm.disabled = undefined;
-  vm.searchEnabled = undefined;
-
-  vm.setInputFocus = function (){
+  app.setInputFocus = function (){
     $scope.$broadcast('UiSelectDemo1');
   };
 
-  vm.enable = function() {
-    vm.disabled = false;
+  app.enable = function() {
+    app.disabled = false;
   };
 
-  vm.disable = function() {
-    vm.disabled = true;
+  app.disable = function() {
+    app.disabled = true;
   };
 
-  vm.enableSearch = function() {
-    vm.searchEnabled = true;
+  app.enableSearch = function() {
+    app.searchEnabled = true;
   };
 
-  vm.disableSearch = function() {
-    vm.searchEnabled = false;
+  app.disableSearch = function() {
+    app.searchEnabled = false;
   };
 
-  vm.clear = function() {
-    vm.person.selected = undefined;
-    vm.address.selected = undefined;
-    vm.country.selected = undefined;
+  app.clear = function() {
+    app.person.selected = undefined;
+    app.address.selected = undefined;
+    app.country.selected = undefined;
   };
 
-  vm.someGroupFn = function (item){
+  app.someGroupFn = function (item){
 
     if (item.name[0] >= 'A' && item.name[0] <= 'M')
         return 'From A - M';
@@ -74,17 +59,17 @@ angular.module('statusController',['userServices'])
 
   };
 
-  vm.firstLetterGroupFn = function (item){
+  app.firstLetterGroupFn = function (item){
       return item.name[0];
   };
 
-  vm.reverseOrderFilterFn = function(groups) {
+  app.reverseOrderFilterFn = function(groups) {
     return groups.reverse();
   };
 
-  vm.personAsync = {selected : "wladimir@email.com"};
-  vm.peopleAsync = [];
-  vm.peopleObj = {
+  app.personAsync = {selected : "wladimir@email.com"};
+  app.peopleAsync = [];
+  app.peopleObj = {
     '1' : { name: 'Adam',      email: 'adam@email.com',      age: 12, country: 'United States' },
     '2' : { name: 'Amalie',    email: 'amalie@email.com',    age: 12, country: 'Argentina' },
     '3' : { name: 'Estefanía', email: 'estefania@email.com', age: 21, country: 'Argentina' },
@@ -97,15 +82,15 @@ angular.module('statusController',['userServices'])
     '10' : { name: 'Nicolás',   email: 'nicolas@email.com',    age: 43, country: 'Colombia' }
   };
 
-  vm.person = {};
+  app.person = {};
 
-  vm.person.selectedValue = vm.peopleObj[3];
-  vm.person.selectedSingle = 'Samantha';
-  vm.person.selectedSingleKey = '5';
+  app.person.selectedValue = app.peopleObj[3];
+  app.person.selectedSingle = 'Samantha';
+  app.person.selectedSingleKey = '5';
   // To run the demos with a preselected person object, uncomment the line below.
-  //vm.person.selected = vm.person.selectedValue;
+  //app.person.selected = app.person.selectedValue;
 
-  vm.people = [
+  app.people = [
     { name: 'Adam',      email: 'adam@email.com',      age: 12, country: 'United States' },
     { name: 'Amalie',    email: 'amalie@email.com',    age: 12, country: 'Argentina' },
     { name: 'Estefanía', email: 'estefania@email.com', age: 21, country: 'Argentina' },
@@ -118,18 +103,49 @@ angular.module('statusController',['userServices'])
     { name: 'Nicolás',   email: 'nicolas@email.com',    age: 43, country: 'Colombia' }
   ];
 
-  vm.availableColors = app.arrTag;
+  app.availableColors = app.arrTag;
 
-  vm.singleDemo = {};
-  vm.singleDemo.color = '';
-  vm.multipleDemo = {};
-  vm.multipleDemo.colors = [];
-  vm.multipleDemo.colors2 = ['Blue','Red'];
-  vm.multipleDemo.selectedPeople = [vm.people[5], vm.people[4]];
-  vm.multipleDemo.selectedPeople2 = vm.multipleDemo.selectedPeople;
-  vm.multipleDemo.selectedPeopleWithGroupBy = [vm.people[8], vm.people[6]];
-  vm.multipleDemo.selectedPeopleSimple = ['samantha@email.com','wladimir@email.com'];
-  vm.multipleDemo.removeSelectIsFalse = [vm.people[2], vm.people[0]];
+  app.singleDemo = {};
+  app.singleDemo.color = '';
+  app.multipleDemo = {};
+  app.multipleDemo.colors = [];
+  app.multipleDemo.colors2 = ['Blue','Red'];
+  app.multipleDemo.selectedPeople = [app.people[5], app.people[4]];
+  app.multipleDemo.selectedPeople2 = app.multipleDemo.selectedPeople;
+  app.multipleDemo.selectedPeopleWithGroupBy = [app.people[8], app.people[6]];
+  app.multipleDemo.selectedPeopleSimple = ['samantha@email.com','wladimir@email.com'];
+  app.multipleDemo.removeSelectIsFalse = [app.people[2], app.people[0]];
+
+  //post a status
+  app.askQuestion = function(askData){
+    User.postStatus(app.askData).then(function(data){
+      if(data.data.success){
+        postStatusObject.statusid = data.data.statusid
+        postStatusObject.tags = app.askData.colors.join();
+        console.log('this is postStatusObject: ', postStatusObject);
+        User.insertTagsWhenPostQuestion(postStatusObject).then(function(data){
+          if(data.data.success){
+            console.log(data.data.message);
+          } else {
+            console.log(data.data.message)
+          }
+        })
+
+        $timeout(function(){
+          $location.path('/');
+        },0)
+        app.successMsg = data.data.message;
+      } else {
+        app.errorMsg = data.data.message;
+      }
+    })
+
+
+
+
+  }
+
+
 })
 
 // .controller('homeCtrl', function(User, $timeout, $location){
