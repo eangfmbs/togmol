@@ -1,4 +1,4 @@
-angular.module('userApp', ['appRoutes','ngTagsInput','ngAria','infinite-scroll','ngMaterial','720kb.socialshare','angular-web-notification','ngImgCrop','statusController','managementController','userControllers','userServices','ngAnimate','mainControllers','authServices','emailController'])
+angular.module('userApp', ['appRoutes','ui.select','ngAria','infinite-scroll','ngMaterial','720kb.socialshare','angular-web-notification','ngImgCrop','statusController','managementController','userControllers','userServices','ngAnimate','mainControllers','authServices','emailController'])
     .config(function ($httpProvider) { //this will keep track all the route that has changed
         $httpProvider.interceptors.push('AuthInterceptors');
     })
