@@ -68,13 +68,13 @@ angular.module('userServices',[])
     }
     //User.showAllTag()
     userFactory.showAllTag = function(){
-      return $http.get('/api/listalltags');
+      return $http.get('/api/listalltags'); //list all tags for poster selecting when post a content
     }
     //User.insertTagsWhenPostQuestion()
-    userFactory.insertTagsWhenPostQuestion = function(tags){
-      console.log('userServices tag: ', tags)
-      return $http.post('/api/inserttagswhenpostquestion', tags);
-    }
+    // userFactory.insertTagsWhenPostQuestion = function(tags){
+    //   console.log('userServices tag: ', tags)
+    //   return $http.post('/api/inserttagswhenpostquestion', tags);
+    // }
 
 
     //From this route is the route for status when user post a content

@@ -1,10 +1,10 @@
 <div class="container" infinite-scroll="main.nextPage()"
 infinite-scroll-disabled="main.busy||main.noMoreData" infinite-scroll-distance="2">
-  <div>Hello. This is Home of {{main.username}}</div>
   <div class="panel-group" ng-repeat = "status in main.allStatus track by $index">
       <div class="panel panel-default">
-        <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.username}} {{status.title}}</a></div>
+        <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.username}} {{status.title}} Date: {{status.date}} Total Like: {{status.totallike}} Total View: {{status.statusview}} Answer: {{status.totalcomment}}</a></div>
         <div class="panel-body">{{status.content}}</div>
+        <div class="panel-body" ng-repeat = "tag in status.tags">{{tag}}</div>
       </div>
   </div>
   <div class="row show-hide-message" ng-show="main.errorMsg">

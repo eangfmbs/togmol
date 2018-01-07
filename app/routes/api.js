@@ -666,9 +666,13 @@ module.exports = function (router) {
         status.title = req.body.title;
         status.content = req.body.content;
         status.username = req.decoded.username;
+        status.tags = req.body.colors;
         if(status.title=='' || status.title==undefined){
             res.json({success:false, message:'Please make sure title box is filled'})
-        } else {
+        } if(status.tags==undefined){
+          res.json({success:false, message:'Please select at least one tag'})
+        }
+         else {
             status.save(function (err, post) {
                 if(err){
                     console.log(err);
@@ -680,25 +684,25 @@ module.exports = function (router) {
     });
 
     //insertTagsWhenPostQuestion
-    router.post('/inserttagswhenpostquestion', function(req, res){
-      var tag = new Tag();
-      tag.tagtypeid = req.body.tags;
-      tag.statusid = req.body.statusid;
-      console.log('hrr is tagtaype name:', tag.tagtypeid)
-      console.log('hrr is tagtaype statusid:', tag.statusid)
-
-      if(tag.tagtypeid=='' || tag.tagtypeid == undefined || tag.statusid=='' || tag.statusid == undefined){
-        return res.json({success:false, message: 'Please make sure you have already selected at least one tag'})
-      } else {
-          tag.save(function(err){
-            if(err){
-              return handleError(err);
-            } else {
-              res.json({success: true, message:'Successfully insert tags'})
-            }
-          })
-      }
-    })
+    // router.post('/inserttagswhenpostquestion', function(req, res){
+    //   var tag = new Tag();
+    //   tag.tagtypeid = req.body.tags;
+    //   tag.statusid = req.body.statusid;
+    //   console.log('post status tag is tagtaype name:', tag.tagtypeid) //its a string because the tag's db is we defined as string so we need to change it to arr first
+    //   console.log('hrr is tagtaype statusid:', tag.statusid)
+    //   console.log('post tag name:', req.body.tags) //its a string because the tag's db is we defined as string so we need to change it to arr first
+    //   if(tag.tagtypeid=='' || tag.tagtypeid == undefined || tag.statusid=='' || tag.statusid == undefined){
+    //     return res.json({success:false, message: 'Please make sure you have already selected at least one tag'})
+    //   } else {
+    //       tag.save(function(err){
+    //         if(err){
+    //           return handleError(err);
+    //         } else {
+    //           res.json({success: true, message:'Successfully insert tags'})
+    //         }
+    //       })
+    //   }
+    // })
 
     //get data from status collection to show on index.html
     router.get('/status', function(req, res){
@@ -746,6 +750,7 @@ module.exports = function (router) {
                   countView: updateView.statusview;
                 }
               })
+              console.log('the views number is: ', countView)
               res.json({success: true, talk: talk, like: talk.totallike, enabledEdit: false, views: countView})
             }
           }

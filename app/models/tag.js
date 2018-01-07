@@ -3,7 +3,7 @@ var validate    = require('mongoose-validator');
 var Schema      = mongoose.Schema;
 
 var tagSchema = new Schema({
-  tagtypeid: {type: String, required: true},
+  tagtypeid: [{type: String, required: true}],
   statusid: {type: String, required: true}
 })
 

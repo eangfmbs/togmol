@@ -4,7 +4,7 @@ angular.module('statusController',['userServices'])
   app.arrTag = [];
   var postStatusObject = {};
 
-  function grapAllShowTags(){
+  function grapAllShowTags(){ //is to show a tag for poster selecting when post a content
     User.showAllTag().then(function(data){
       console.log(data)
       if(data.data.success){
@@ -118,18 +118,19 @@ angular.module('statusController',['userServices'])
 
   //post a status
   app.askQuestion = function(askData){
+    console.log('askData: ', app.askData)
     User.postStatus(app.askData).then(function(data){
       if(data.data.success){
         postStatusObject.statusid = data.data.statusid
-        postStatusObject.tags = app.askData.colors.join();
+        postStatusObject.tags = app.askData.colors;
         console.log('this is postStatusObject: ', postStatusObject);
-        User.insertTagsWhenPostQuestion(postStatusObject).then(function(data){
-          if(data.data.success){
-            console.log(data.data.message);
-          } else {
-            console.log(data.data.message)
-          }
-        })
+        // User.insertTagsWhenPostQuestion(postStatusObject).then(function(data){
+        //   if(data.data.success){
+        //     console.log(data.data.message);
+        //   } else {
+        //     console.log(data.data.message)
+        //   }
+        // })
 
         $timeout(function(){
           $location.path('/');
@@ -159,15 +160,33 @@ angular.module('statusController',['userServices'])
   // })
 // })
 
-.controller('profileCtrl', function(User, $timeout, $location){
+.controller('profileCtrl', function($scope, User, $timeout, $location){
   var app = this;
   User.getProfileStatus().then(function(data){
     if(data.data.success){
+      console.log(data.data.profile)
       app.allStatus = data.data.profile;
     } else {
       app.errorMsg = data.data.message;
     }
   })
+
+//crop image
+    $scope.myImage='';
+    $scope.myCroppedImage='';
+
+    var handleFileSelect=function(evt) {
+      var file=evt.currentTarget.files[0];
+      var reader = new FileReader();
+      reader.onload = function (evt) {
+        $scope.$apply(function($scope){
+          $scope.myImage=evt.target.result;
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+    angular.element(document.querySelector('#fileInput')).on('change',handleFileSelect);
+
 })
 .controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){
   var app = this;

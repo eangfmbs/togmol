@@ -121,7 +121,7 @@ angular.module('mainControllers', ['authServices'])
 
   User.getAllStatus().then(function(data){
     if(data.data.success){
-      length = data.data.status.length;
+      // length = data.data.status.length;
       // allTalkData = data.data.status;
       // app.nextPage = function(){
       //   if(app.busy){
@@ -156,5 +156,13 @@ angular.module('mainControllers', ['authServices'])
   //     console.log("out of DAta")
   //   }
   // }
+
+  // User.getTagsShowOnHomePage().then(function(data){
+  //   if(data.data.success){
+  //     app.tags = data.data.tags;
+  //   } else {
+  //     app.errorMsg = data.data.message;
+  //   }
+  // })
 
 });

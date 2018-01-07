@@ -1,6 +1,6 @@
 <div class="container">
   <div class="panel panel-info">
-    <div class="panel-heading">{{talk.status.username}} {{talk.status.title}} {{talk.status.totallike}}</div>
+    <div class="panel-heading">{{talk.status.username}} {{talk.status.title}} Total Like: {{talk.status.totallike}} Total View:{{talk.status.statusview}} Total Answer: {{talk.status.totalcomment}} Date: {{talk.status.date}}</div>
 
     <div>
       <button ng-show="talk.enabledEdit" class="btn btn-info" type="submit"><a href="/updatetalk/{{talk.status._id}}">Update?</a></button>
@@ -30,6 +30,9 @@
 
     <div class="panel-body">
       {{talk.status.content}}
+    </div>
+    <div class="panel-body" ng-repeat="tag in talk.status.tags">
+      {{tag}}
     </div>
   </div>
 
@@ -74,6 +77,9 @@
         </div>
         <div>
           <button ng-show="comment.username===talk.userDecode" class="btn btn-danger" type="submit" ng-click="talk.deleteCommnet(comment._id)">Delete?</button>
+        </div>
+        <div>
+          <button ng-show="comment.username===talk.userDecode" class="btn btn-info" type="submit" ng-click="talk.updateCommnet(comment._id)">Update</button>
         </div>
       </div>
   </div>

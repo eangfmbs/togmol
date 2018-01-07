@@ -1,10 +1,21 @@
 <div class="container">
 
+    <div>Select an image file: <input type="file" id="fileInput" /></div>
+    <div class="cropArea">
+      <img-crop image="myImage"
+       result-image="myCroppedImage">
+      </img-crop>
+    </div>
+    <div>Cropped Image:</div>
+    <div><img ng-src="{{myCroppedImage}}" /></div>
+
+
   <div>Hello. This is Home of {{main.username}}</div>
   <div class="panel-group" ng-repeat = "status in profile.allStatus">
       <div class="panel panel-default">
-        <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.username}} {{status.title}}</a></div>
+        <div class="panel-heading"><a href="/talk/{{status._id}}">{{status.date}} total view: {{status.statusview}} total like: {{status.totallike}} total answer: {{status.totalcomment}} {{status.username}} {{status.title}}</a></div>
         <div class="panel-body">{{status.content}}</div>
+        <div ng-repeat = "tag in status.tags">{{tag}}</div>
       </div>
   </div>
   <div class="row show-hide-message" ng-show="profile.errorMsg">
