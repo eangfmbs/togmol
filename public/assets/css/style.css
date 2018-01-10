@@ -19,7 +19,7 @@ body {
     border: 3px dashed #DDD;
     width: 200px;
     text-align: center;
-    padding: 25px;
+    padding: 0px;
     margin: 10px;
 }
 .dragover {

@@ -1,4 +1,4 @@
-angular.module('statusController',['userServices'])
+angular.module('statusController',['userServices','authServices'])
 .controller('askCtrl', function(User, $scope, $timeout, $location){
   var app = this;
   app.arrTag = [];
@@ -160,7 +160,7 @@ angular.module('statusController',['userServices'])
   // })
 // })
 
-.controller('profileCtrl', function($scope, User, $timeout, $location){
+.controller('profileCtrl', function($scope, User, Formulator, $timeout, $location){
   var app = this;
   User.getProfileStatus().then(function(data){
     if(data.data.success){
@@ -170,6 +170,70 @@ angular.module('statusController',['userServices'])
       app.errorMsg = data.data.message;
     }
   })
+
+  // upload image
+  // $scope.upload = function (file) {
+  //       Upload.upload({
+  //           url: 'upload/url',
+  //           data: {file: file, 'username': $scope.username}
+  //       }).then(function (resp) {
+  //           console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+  //       }, function (resp) {
+  //           console.log('Error status: ' + resp.status);
+  //       }, function (evt) {
+  //           var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+  //           console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+  //       });
+  //   };
+
+  $scope.loading = false;
+  $scope.uploadPhoto = null;
+  $scope.croppedPhoto = null;
+
+  $scope.readFileImg = function(files){
+  $scope.uploadPhoto = null;
+  $scope.croppedPhoto = null;
+  $scope.photo = null;
+
+  if (files && files.length) {
+    var readImgCallback = function(err, img){
+      $scope.loading = false;
+      if(err) return Toaster.toastErrorMessage($scope, err);
+
+      $scope.$apply(function(){
+        $scope.uploadPhoto = img;
+      });
+    };
+    $scope.loading = true;
+
+    Formulator.readImageFile(files[0], readImgCallback);
+  }
+};
+
+$scope.upload = function () {
+  if ($scope.croppedPhoto) {
+    $scope.loading = true;
+
+    var uploadCallback = function(currentUser){
+      currentUser.$promise.then(function(user){
+        $scope.user = user;
+        Toaster.toastSuccess('Photo saved.');
+      });
+    };
+
+    Auth.updateProfilePhoto($scope.croppedPhoto, uploadCallback)
+      .catch( function(err) {
+        Toaster.toastErrorMessage($scope, 'Error saving photo.');
+      })
+      .finally(function(){
+        $scope.loading = false;
+      });
+  }
+  else {
+    $scope.loading = false;
+  }
+};
+
 
 //crop image
     $scope.myImage='';
