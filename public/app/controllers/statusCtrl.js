@@ -160,7 +160,7 @@ angular.module('statusController',['userServices','authServices'])
   // })
 // })
 
-.controller('profileCtrl', function($scope, User, Formulator, $timeout, $location){
+.controller('profileCtrl', function($scope, User, ImageService, $timeout, $location){
   var app = this;
   User.getProfileStatus().then(function(data){
     if(data.data.success){
@@ -172,19 +172,6 @@ angular.module('statusController',['userServices','authServices'])
   })
 
   // upload image
-  // $scope.upload = function (file) {
-  //       Upload.upload({
-  //           url: 'upload/url',
-  //           data: {file: file, 'username': $scope.username}
-  //       }).then(function (resp) {
-  //           console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-  //       }, function (resp) {
-  //           console.log('Error status: ' + resp.status);
-  //       }, function (evt) {
-  //           var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-  //           console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-  //       });
-  //   };
 
   $scope.loading = false;
   $scope.uploadPhoto = null;
@@ -206,7 +193,7 @@ angular.module('statusController',['userServices','authServices'])
     };
     $scope.loading = true;
 
-    Formulator.readImageFile(files[0], readImgCallback);
+    ImageService.readImageFile(files[0], readImgCallback);
   }
 };
 
@@ -220,7 +207,7 @@ $scope.upload = function () {
         Toaster.toastSuccess('Photo saved.');
       });
     };
-
+//this line run first after uploadCallback initiat
     Auth.updateProfilePhoto($scope.croppedPhoto, uploadCallback)
       .catch( function(err) {
         Toaster.toastErrorMessage($scope, 'Error saving photo.');

@@ -8,30 +8,18 @@
                   </div>
                   <div class="avatar">
                       <!-- <img alt="" src="https://lh3.googleusercontent.com/-7u4lQZKPLao/AAAAAAAAAAI/AAAAAAAAZVw/5Caf-jo14f4/photo.jpg?sz=328"> -->
-
-                  <!-- add the image from browse  -->
-                    <!-- <div ngf-drop="uploadFiles($files)"
-                      ngf-select ng-model="files" class="drop-box drop-box-container"
-                      ngf-drag-over-class="'dragover'"
-                      ngf-multiple="false"
-                      ngf-allow-dir="true"
-                      accept="image/*"
-                      ngf-pattern="'image/*'">
-                      <img-crop image="myImage"
-                       result-image="myCroppedImage">
-                      </img-crop>
-                      Drop pdfs or images here or click to upload
-                    </div> -->
-
-
-                  <!-- end browse -->
-
 <!-- profile image -->
                   <!-- drop box -->
-          <div ng-show="!uploadPhoto && !profile.photo && !loading" class="drop-box drop-box-container" ngf-drag-over-class="drop-box-dragover" ngf-change="readFileImg($files)" ngf-drop="" ngf-select="" ng-model="files" ngf-multiple="false" ngf-allow-dir="false" accept="image/*" ng-cloak="">
+          <div ng-show="!uploadPhoto && !profile.photo && !loading"
+            class="drop-box drop-box-container"
+            ngf-drag-over-class="drop-box-dragover"
+            ngf-change="readFileImg($files)" ngf-drop=""
+            ngf-select="" ng-model="files"
+            ngf-multiple="false"
+            ngf-allow-dir="false"
+            accept="image/*" ng-cloak="">
             <span>Drop image or click to upload profile photo</span>
           </div>
-//what we need to change is in the user.photo is sould be profile
 
           <!-- current user photo -->
           <div class="photo-shadow" ng-show="profile.photo" ng-cloak="">
@@ -47,11 +35,23 @@
             </div>
           </div>
           <!--Img Crop-->
-        <img-crop ng-show="uploadPhoto && !loading && !profile.photo" image="uploadPhoto" result-image="croppedPhoto" area-type="square" ngf-accept="'image/*'" result-image-size="250" class="drop-box-container" ng-cloak=""></img-crop>
+        <img-crop ng-show="uploadPhoto && !loading && !profile.photo" image="uploadPhoto"
+          result-image="croppedPhoto"
+          area-type="square" ngf-accept="'image/*'" result-image-size="250"
+          class="drop-box-container" ng-cloak="">
+        </img-crop>
         <!--Save-->
-        <md-button ng-show="uploadPhoto && !loading && !profile.photo" ng-disabled="loading" ng-click="upload()" class="md-raised submit-button md-accent button-center block" ng-cloak="">Save Photo</md-button>
+        <md-button ng-show="uploadPhoto && !loading && !profile.photo"
+          ng-disabled="loading" ng-click="upload()"
+          class="md-raised submit-button md-accent button-center block"
+          ng-cloak="">Save Photo</md-button>
         <!--Reset-->
-        <md-button ng-show="profile.photo" ngf-select="" ngf-change="readFileImg($files)" ng-disabled="loading" ngf-multiple="false" ngf-allow-dir="false" accept="image/*" class="button-center block" ng-cloak="">Change Photo</md-button>
+        <md-button ng-show="profile.photo"
+          ngf-select="" ngf-change="readFileImg($files)"
+          ng-disabled="loading" ngf-multiple="false"
+          ngf-allow-dir="false" accept="image/*"
+          class="button-center block"
+          ng-cloak="">Change Photo</md-button>
 
 <!--end profile -->
 

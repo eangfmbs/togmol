@@ -70,7 +70,7 @@ angular.module('authServices',[])
 })
 
 // factory utilities for reading the image file (using an HTML5 FileReader), and uploading it to the server (using my Auth factory)
-.factory('Formulator', function Formulator() {
+.factory('ImageService', function ImageService() {
     return {
       readImageFile: function(file, cb){
         if(window.FileReader){
@@ -97,4 +97,50 @@ angular.module('authServices',[])
         }
       }
     };
-  });
+  })
+
+ //  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+ //    var currentUser = {};
+ //    if($cookieStore.get('token')) {
+ //      currentUser = User.get();
+ //    }
+ //
+ //      /**
+ //       * Update large profile photo
+ //       */
+ //       // we should include this function into the Auth function above**********
+ //      updateProfilePhoto: function(photo, callback){
+ //        var cb = callback || angular.noop;
+ //
+ //        return User.updateProfilePhoto({id : currentUser._id}, {
+ //          photo: photo
+ //        }, function(user) {
+ //          currentUser = User.get();
+ //          return cb(currentUser);
+ //        }, function(err) {
+ //          currentUser = User.get();
+ //          return cb(err);
+ //        }).$promise;
+ //      }
+ //    };
+ //  })
+ //
+ //  .factory('User', function ($resource) {
+ //    return $resource('/api/users/:id/:controller', {
+ //      id: '@_id'
+ //    },
+ //    {
+ //      get: {
+ //        method: 'GET',
+ //        params: {
+ //          id:'me'
+ //        }
+ //      },
+ //      updateProfilePhoto: {
+ //        method: 'PUT',
+ //          params: {
+ //            controller: 'profilePhoto'
+ //          }
+ //      }
+ //   });
+ // })
