@@ -22,15 +22,15 @@
           </div>
 
           <!-- current user photo -->
-          <div class="photo-shadow" ng-show="profile.photo" ng-cloak="">
-            <img class="photo-img" ng-src="{{profile.photo}}">
+          <div class="photo-shadow" ng-show="photo" ng-cloak="">
+            <img class="photo-img" ng-src="{{croppedPhoto}}">
           </div>
 
 
           <!--progress-->
           <div class="drop-box-container" ng-show="loading" ng-cloak="">
             <div class="wrap">
-              <md-progress-circular class="md-hue-2" ng-show="loading" md-mode="indeterminate" style="margin: auto;">
+              <md-progress-circular class="md-hue-2" ng-show="!loading" md-mode="indeterminate" style="margin: auto;">
               </md-progress-circular>
             </div>
           </div>
@@ -44,18 +44,19 @@
         <md-button ng-show="uploadPhoto && !loading && !profile.photo"
           ng-disabled="loading" ng-click="upload()"
           class="md-raised submit-button md-accent button-center block"
+          name="{{croppedPhoto}}"
           ng-cloak="">Save Photo</md-button>
         <!--Reset-->
-        <md-button ng-show="profile.photo"
+        <md-button ng-show="photo && loading"
           ngf-select="" ngf-change="readFileImg($files)"
-          ng-disabled="loading" ngf-multiple="false"
-          ngf-allow-dir="false" accept="image/*"
-          class="button-center block"
+          ngf-select="" ng-model="files"
+          ngf-multiple="false"
+          ngf-allow-dir="false"
+          accept="image/*" ng-cloak=""
+          class="md-flat submit-button button-center"
           ng-cloak="">Change Photo</md-button>
 
 <!--end profile -->
-
-
 
                   </div><br />
                   <div class="info">
@@ -105,11 +106,11 @@
 
 
 
-    <div>Select an image file: <input type="file" id="fileInput" /></div>
+    <!-- <div>Select an image file: <input type="file" id="fileInput" /></div>
     <div class="cropArea">
       <img-crop image="myImage"
        result-image="myCroppedImage">
-     </img-crop>
+     </img-crop> -->
 
      <!-- <img-crop
        //ng-show="uploadPhoto && !loading && !user.photo"
@@ -121,12 +122,6 @@
        class="drop-box-container"
        ng-cloak=""></img-crop> -->
 
-    </div>
-    <div>Cropped Image:</div>
-    <div><img ng-src="{{myCroppedImage}}" /></div>
-
-
-
-
-
-</div>
+    <!-- </div> -->
+    <!-- <div>Cropped Image:</div> -->
+    <!-- <div><img data-ng-src="{{croppedPhoto}}" /></div> -->

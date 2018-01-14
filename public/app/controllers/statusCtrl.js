@@ -199,22 +199,17 @@ angular.module('statusController',['userServices','authServices'])
 
 $scope.upload = function () {
   if ($scope.croppedPhoto) {
+    $scope.photo=$scope.croppedPhoto
+    var objectCrop = {};
+    objectCrop.profile = $scope.croppedPhoto;
     $scope.loading = true;
-
-    var uploadCallback = function(currentUser){
-      currentUser.$promise.then(function(user){
-        $scope.user = user;
+    User.updateProfilePhoto(objectCrop).then(function(data){
+      if(data.data.success){
         Toaster.toastSuccess('Photo saved.');
-      });
-    };
-//this line run first after uploadCallback initiat
-    Auth.updateProfilePhoto($scope.croppedPhoto, uploadCallback)
-      .catch( function(err) {
+      } else {
         Toaster.toastErrorMessage($scope, 'Error saving photo.');
-      })
-      .finally(function(){
-        $scope.loading = false;
-      });
+      }
+    })
   }
   else {
     $scope.loading = false;
@@ -223,20 +218,20 @@ $scope.upload = function () {
 
 
 //crop image
-    $scope.myImage='';
-    $scope.myCroppedImage='';
-
-    var handleFileSelect=function(evt) {
-      var file=evt.currentTarget.files[0];
-      var reader = new FileReader();
-      reader.onload = function (evt) {
-        $scope.$apply(function($scope){
-          $scope.myImage=evt.target.result;
-        });
-      };
-      reader.readAsDataURL(file);
-    };
-    angular.element(document.querySelector('#fileInput')).on('change',handleFileSelect);
+    // $scope.myImage='';
+    // $scope.myCroppedImage='';
+    //
+    // var handleFileSelect=function(evt) {
+    //   var file=evt.currentTarget.files[0];
+    //   var reader = new FileReader();
+    //   reader.onload = function (evt) {
+    //     $scope.$apply(function($scope){
+    //       $scope.myImage=evt.target.result;
+    //     });
+    //   };
+    //   reader.readAsDataURL(file);
+    // };
+    // angular.element(document.querySelector('#fileInput')).on('change',handleFileSelect);
 
 })
 .controller('updateTalkCtrl', function(User,$scope,$routeParams,$timeout,$location){

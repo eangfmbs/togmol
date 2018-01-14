@@ -11,8 +11,8 @@ var social     = require('./app/passport/passport')(app, passport); //mean that 
 var port    = process.env.PORT || 8080;
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({limit:'40mb', extended: true }));
+app.use(bodyParser.json({limit: '40mb'}));
 app.use(express.static(__dirname+'/public'));
 app.use('/api', appRoute);
 

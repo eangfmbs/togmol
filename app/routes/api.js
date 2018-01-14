@@ -1083,6 +1083,13 @@ router.delete('/peopleunvotetalkcomment/:id', function(req, res){
   })
 })
 
+router.get('/updateProfilePhoto', function(req, res){
+  if(req.body.croppedPhoto){
+    console.log('hello croppedPhoto');
+  }
+  console.log('hello croppedPhoto',req.body.croppedPhoto);
+})
+
 // //check for all vote comment: the status of each one of vote in each comments
 // router.get('/checkeachstatusvoteintalkcomment:id', function(req, res){ // the id of status
 //   Comment.find({_id:req.params.id}, function(err, votestatus){

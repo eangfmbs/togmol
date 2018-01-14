@@ -157,6 +157,11 @@ angular.module('userServices',[])
     userFactory.unvoteTalkComment = function(id){
       return $http.delete('/api/peopleunvotetalkcomment/'+id);
     };
+    //User.updateProfilePhoto(imageCrop)
+    userFactory.updateProfilePhoto = function(croppedPhoto){
+      console.log('the love: ', croppedPhoto);
+      return $http.get('/api/updateProfilePhoto',croppedPhoto);
+    };
 
     return userFactory;
 });
