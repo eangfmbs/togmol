@@ -1027,7 +1027,7 @@ router.post('/peoplevotetalkcomment', function(req, res){
      vote.commentid = req.body.commentid;
      vote.statusid = req.body.statusid;
      vote.username = req.decoded.username;
-     console.log('this is comment ID: ', vote.commentid)
+     console.log('this Test Vote: ', req.body.testVote)
      console.log('this is status ID: ', vote.statusid)
      Comment.findOne({_id: vote.commentid}, function(err, comment){
        if(err){
@@ -1083,11 +1083,12 @@ router.delete('/peopleunvotetalkcomment/:id', function(req, res){
   })
 })
 
-router.get('/updateProfilePhoto', function(req, res){
-  if(req.body.croppedPhoto){
+router.post('/updateProfilePhoto', function(req, res){
+  if(req.body.profile){
     console.log('hello croppedPhoto');
   }
-  console.log('hello croppedPhoto',req.body.croppedPhoto);
+  console.log('hello croppedPhoto',req.body.profile);
+
 })
 
 // //check for all vote comment: the status of each one of vote in each comments

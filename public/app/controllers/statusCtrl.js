@@ -121,9 +121,9 @@ angular.module('statusController',['userServices','authServices'])
     console.log('askData: ', app.askData)
     User.postStatus(app.askData).then(function(data){
       if(data.data.success){
-        postStatusObject.statusid = data.data.statusid
-        postStatusObject.tags = app.askData.colors;
-        console.log('this is postStatusObject: ', postStatusObject);
+        // postStatusObject.statusid = data.data.statusid
+        // postStatusObject.tags = app.askData.colors;
+        // console.log('this is postStatusObject: ', postStatusObject);
         // User.insertTagsWhenPostQuestion(postStatusObject).then(function(data){
         //   if(data.data.success){
         //     console.log(data.data.message);
@@ -182,12 +182,12 @@ angular.module('statusController',['userServices','authServices'])
   $scope.croppedPhoto = null;
   $scope.photo = null;
 
-  if (files && files.length) {
+  if (files && files.length) { //this part is just pass a file and update a scope with a new file
     var readImgCallback = function(err, img){
       $scope.loading = false;
       if(err) return Toaster.toastErrorMessage($scope, err);
 
-      $scope.$apply(function(){
+      $scope.$apply(function(){ //function to update the scope with new file when something change
         $scope.uploadPhoto = img;
       });
     };
@@ -199,10 +199,12 @@ angular.module('statusController',['userServices','authServices'])
 
 $scope.upload = function () {
   if ($scope.croppedPhoto) {
-    $scope.photo=$scope.croppedPhoto
+    $scope.myphoto=$scope.croppedPhoto;
+    $scope.photo=$scope.croppedPhoto;
     var objectCrop = {};
     objectCrop.profile = $scope.croppedPhoto;
     $scope.loading = true;
+    console.log("the file is:", $scope.files.name)
     User.updateProfilePhoto(objectCrop).then(function(data){
       if(data.data.success){
         Toaster.toastSuccess('Photo saved.');
@@ -379,6 +381,7 @@ $scope.upload = function () {
       var objectComment = {};
       objectComment.statusid = $routeParams.id;
       objectComment.commentid = commentID;
+      objectComment.testVote = "hello World";
       User.checkVoteComment(commentID).then(function(data){
         if(!data.data.isVoteComment){
           User.voteTalkComment(objectComment).then(function(data){

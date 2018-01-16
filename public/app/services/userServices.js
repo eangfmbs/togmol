@@ -159,8 +159,19 @@ angular.module('userServices',[])
     };
     //User.updateProfilePhoto(imageCrop)
     userFactory.updateProfilePhoto = function(croppedPhoto){
+      var fd = new FormData();
+      // var imgBlob = dataURItoBlob($scope.uploadme);
+      fd.append('file', croppedPhoto);
       console.log('the love: ', croppedPhoto);
-      return $http.get('/api/updateProfilePhoto',croppedPhoto);
+      return $http.post('/api/updateProfilePhoto', croppedPhoto
+      ,fd,
+      {
+        transformRequest: angular.identity,
+        headers: {
+              'Content-Type': undefined
+            }
+      }
+    );
     };
 
     return userFactory;

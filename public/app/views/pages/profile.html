@@ -23,9 +23,9 @@
 
           <!-- current user photo -->
           <div class="photo-shadow" ng-show="photo" ng-cloak="">
-            <img class="photo-img" ng-src="{{croppedPhoto}}">
+            <img class="photo-img"
+              ng-src="{{croppedPhoto}}">
           </div>
-
 
           <!--progress-->
           <div class="drop-box-container" ng-show="loading" ng-cloak="">
@@ -44,7 +44,6 @@
         <md-button ng-show="uploadPhoto && !loading && !profile.photo"
           ng-disabled="loading" ng-click="upload()"
           class="md-raised submit-button md-accent button-center block"
-          name="{{croppedPhoto}}"
           ng-cloak="">Save Photo</md-button>
         <!--Reset-->
         <md-button ng-show="photo && loading"
