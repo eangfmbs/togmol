@@ -5,6 +5,7 @@ var Vote        = require('../models/vote');
 var Like        = require('../models/like');
 var Tag         = require('../models/tag');
 var TagType     = require('../models/tagtype');
+var imageHelper = require('../imagehelper/imagehelper');
 var jwt         = require('jsonwebtoken');
 var nodemailer  = require('nodemailer');
 var sgTransport = require('nodemailer-sendgrid-transport');
@@ -1084,11 +1085,20 @@ router.delete('/peopleunvotetalkcomment/:id', function(req, res){
 })
 
 router.post('/updateProfilePhoto', function(req, res){
-  if(req.body.profile){
-    console.log('hello croppedPhoto');
-  }
-  console.log('hello croppedPhoto',req.body.profile);
-
+  User.findOne({username: req.decoded.username}, function(err, user){
+    if(req.body.profile && user){
+      imageHelper.uploadBase64Image('./tmp/' +user.username + '_profile.jpg', req.body.profile, function(err, result){
+          if(err) res.send(400, err);
+          else{
+            user.profile = String(result.url);
+            user.save(function(err) {
+              if(err) return validationError(res, err);
+              return res.json({success: true})
+            });
+          }
+        });
+    }
+  })
 })
 
 // //check for all vote comment: the status of each one of vote in each comments

@@ -160,7 +160,7 @@ angular.module('statusController',['userServices','authServices'])
   // })
 // })
 
-.controller('profileCtrl', function($scope, User, ImageService, $timeout, $location){
+.controller('profileCtrl', function($scope, User, $mdToast, ImageService, $timeout, $location){
   var app = this;
   User.getProfileStatus().then(function(data){
     if(data.data.success){
@@ -207,7 +207,18 @@ $scope.upload = function () {
     console.log("the file is:", $scope.files.name)
     User.updateProfilePhoto(objectCrop).then(function(data){
       if(data.data.success){
-        Toaster.toastSuccess('Photo saved.');
+        var toast = $mdToast.simple()
+                .textContent('Photo saved')
+                .action('OK')
+                .highlightAction(true)
+                .position('left');
+                $mdToast.show(toast);
+// or use the toast bellow
+               //  $mdToast.show (
+               //    $mdToast.simple()
+               //    .textContent('Hello World!')
+               //    .hideDelay(3000)
+               // );
       } else {
         Toaster.toastErrorMessage($scope, 'Error saving photo.');
       }
@@ -381,7 +392,6 @@ $scope.upload = function () {
       var objectComment = {};
       objectComment.statusid = $routeParams.id;
       objectComment.commentid = commentID;
-      objectComment.testVote = "hello World";
       User.checkVoteComment(commentID).then(function(data){
         if(!data.data.isVoteComment){
           User.voteTalkComment(objectComment).then(function(data){
